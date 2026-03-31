@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { site } from '../data/site';
+
+const aboutEntries = await getCollection('about');
+const about = aboutEntries[0];
+
+let AboutContent: Awaited<ReturnType<typeof render>>['Content'] | null = null;
+if (about) {
+  const rendered = await render(about);
+  AboutContent = rendered.Content;
+}
+---
+
+<BaseLayout title={site.name}>
+  <main id="main-content">
+    <section id="hero">
+      <h1>{site.name}</h1>
+      <h2>{site.title}</h2>
+      <p>{site.tagline}</p>
+    </section>
+
+    <section id="about">
+      <h2>About</h2>
+      {AboutContent ? (
+        <AboutContent />
+      ) : (
+        <p>Coming soon.</p>
+      )}
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <ul>
+        <li><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></li>
+        <li><a href={site.contact.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href={site.contact.github} target="_blank" rel="noopener noreferrer">GitHub</a></li>
+      </ul>
+    </section>
+  </main>
+</BaseLayout>

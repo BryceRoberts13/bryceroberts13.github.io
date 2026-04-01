@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+const aboutEntries = await getCollection('about');
+const about = aboutEntries[0];
+
+let Content = null;
+if (about) {
+  const rendered = await render(about);
+  Content = rendered.Content;
+}
+---
+
+<BaseLayout title="About | Bryce Roberts">
+  <section class="page-header">
+    <div class="header-content fade-in-up">
+      <h1>About Me</h1>
+      <div class="divider"></div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <article class="prose glass-card fade-in-up" style="animation-delay: 0.1s;">
+      {Content ? <Content /> : <p>About content coming soon...</p>}
+    </article>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 3rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    color: var(--text-bright);
+  }
+
+  .divider {
+    height: 3px;
+    width: 60px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .prose {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-main);
+  }
+
+  .prose :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

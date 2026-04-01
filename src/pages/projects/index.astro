@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects');
+projects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="Projects | Bryce Roberts">
+  <section class="page-header">
+    <div class="header-content fade-in-up">
+      <h1>Projects</h1>
+      <div class="divider"></div>
+      <p class="subtitle">Software, systems, and things I've built.</p>
+    </div>
+  </section>
+
+  <section class="projects-grid">
+    {projects.map((project, index) => (
+      <a href={`/projects/${project.id}`} class="project-card glass-card fade-in-up" style={`animation-delay: ${0.1 * (index + 1)}s;`}>
+        <div class="card-content">
+          <h2>{project.data.title}</h2>
+          <p>{project.data.description}</p>
+          <div class="tags">
+            {project.data.tags?.map(tag => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        </div>
+      </a>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 4rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    color: var(--text-bright);
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    color: var(--text-main);
+    margin-top: 1.5rem;
+  }
+
+  .divider {
+    height: 3px;
+    width: 60px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .project-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-bright);
+    transition: color 0.2s ease;
+  }
+
+  .project-card:hover h2 {
+    color: var(--accent);
+  }
+
+  .project-card p {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: rgba(252, 170, 45, 0.1);
+    color: var(--accent);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+  }
+
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

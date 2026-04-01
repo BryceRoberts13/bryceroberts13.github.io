@@ -1,0 +1,100 @@
+---
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Projects', href: '/projects' },
+  { label: 'Garden', href: '/garden' },
+  { label: 'Resume', href: '/resume' }
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="navbar">
+  <div class="nav-container">
+    <a href="/" class="logo">BR</a>
+    <nav>
+      <ul class="nav-links">
+        {navItems.map(item => {
+          const isActive = item.href === '/' 
+            ? currentPath === '/' 
+            : currentPath.startsWith(item.href);
+            
+          return (
+            <li>
+              <a 
+                href={item.href} 
+                class={isActive ? 'active' : ''}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--nav-height);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text-bright);
+    letter-spacing: -0.05em;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+  }
+
+  .nav-links a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+    position: relative;
+    padding: 0.5rem 0;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--text-bright);
+  }
+
+  .nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent);
+    border-radius: 2px;
+  }
+</style>

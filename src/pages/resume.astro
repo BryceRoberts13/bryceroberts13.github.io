@@ -1,0 +1,225 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout title="Resume | Bryce Roberts">
+  <section class="page-header">
+    <div class="header-content fade-in-up">
+      <div class="header-top">
+        <h1>Resume</h1>
+        <a href={`mailto:${site.contact.email}`} class="glass-btn">Contact Me</a>
+      </div>
+      <div class="divider"></div>
+      <p class="subtitle">A brief overview of my experience and education.</p>
+    </div>
+  </section>
+
+  <div class="resume-content fade-in-up" style="animation-delay: 0.1s;">
+    <!-- Education Section -->
+    <section class="resume-section">
+      <h2 class="section-title">Education</h2>
+      <div class="resume-item glass-card">
+        <div class="item-header">
+          <h3>Massachusetts Institute of Technology (MIT)</h3>
+          <span class="date">Expected Graduation</span>
+        </div>
+        <div class="item-details">
+          <p class="role">Student</p>
+          <ul class="achievements">
+            <li>Relevant coursework in core CS fundamentals and mathematics.</li>
+            <li>Involved in hands-on building, woodworking, and software engineering.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="resume-section">
+      <h2 class="section-title">Experience</h2>
+      <div class="resume-item glass-card">
+        <div class="item-header">
+          <h3>Software Engineer Intern</h3>
+          <span class="date">Summer 2023</span>
+        </div>
+        <div class="item-details">
+          <p class="role">Example Tech Company</p>
+          <ul class="achievements">
+            <li>Built and deployed full-stack web applications.</li>
+            <li>Optimized frontend performance and reduced load times by 20%.</li>
+            <li>Collaborated with design teams to implement modern UX components.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="resume-section">
+      <h2 class="section-title">Skills</h2>
+      <div class="skills-grid glass-card">
+        <div class="skill-category">
+          <h3>Languages/Frameworks</h3>
+          <p>TypeScript, React, Astro, Python, HTML/CSS</p>
+        </div>
+        <div class="skill-category">
+          <h3>Tools</h3>
+          <p>Git, GitHub Actions, Vercel, Figma</p>
+        </div>
+        <div class="skill-category">
+          <h3>Hardware/Crafts</h3>
+          <p>Woodworking, Leatherworking, Soldering</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 4rem;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    letter-spacing: -0.02em;
+    color: var(--text-bright);
+    margin: 0;
+  }
+
+  .glass-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: var(--text-bright);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .glass-btn:hover {
+    background: rgba(252, 170, 45, 0.1);
+    border-color: rgba(252, 170, 45, 0.4);
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    color: var(--text-main);
+    margin-top: 1.5rem;
+  }
+
+  .divider {
+    height: 3px;
+    width: 60px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .resume-section {
+    margin-bottom: 3rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    color: var(--text-bright);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+  .resume-item {
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .item-header h3 {
+    font-size: 1.25rem;
+    color: var(--text-bright);
+    margin: 0;
+  }
+
+  .date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+
+  .role {
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+  }
+
+  .achievements {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .achievements li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+    font-size: 0.95rem;
+  }
+
+  .achievements li::before {
+    content: "▹";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .skill-category h3 {
+    font-size: 1rem;
+    color: var(--text-bright);
+    margin-bottom: 0.5rem;
+  }
+
+  .skill-category p {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-family: var(--font-mono);
+  }
+
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

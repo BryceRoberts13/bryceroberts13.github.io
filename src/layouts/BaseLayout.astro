@@ -1,4 +1,6 @@
 ---
+import Navigation from '../components/Navigation.astro';
+
 interface Props {
   title?: string;
 }
@@ -16,27 +18,20 @@ const base = import.meta.env.BASE_URL;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style is:global>
       @import '../styles/global.css';
     </style>
   </head>
   <body>
-    <a href="#main-content" class="skip-link">Skip to content</a>
-    <style>
-      .skip-link {
-        position: absolute;
-        top: -40px;
-        left: 0;
-        padding: 8px 16px;
-        background: var(--accent, #6c9bcf);
-        color: white;
-        z-index: 100;
-        text-decoration: none;
-      }
-      .skip-link:focus {
-        top: 0;
-      }
-    </style>
-    <slot />
+    <Navigation />
+    <main id="main-content">
+      <slot />
+    </main>
   </body>
 </html>

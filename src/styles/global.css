@@ -1,14 +1,25 @@
 :root {
-  --bg: #faf8f5;
-  --text: #1a1a2e;
-  --accent: #6c9bcf;
-  --accent-soft: #a8c5e8;
-  --muted: #6b7280;
-  --font-sans: system-ui, -apple-system, sans-serif;
+  /* Colors inspired by Relace AI (Light Edition) */
+  --bg-color: #F3F2E7;
+  --text-main: #70706F;
+  --text-bright: #191918;
+  --accent: #FCAA2D;
+  --card-bg: rgba(255, 255, 255, 0.4);
+  --card-border: rgba(25, 25, 24, 0.08); /* slightly darker border than background */
+  --glass-bg: rgba(243, 242, 231, 0.85);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
+
+  /* Layout */
+  --nav-height: 80px;
 }
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -16,52 +27,68 @@ html {
 }
 
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  background-color: var(--bg-color);
+  color: var(--text-main);
   font-family: var(--font-sans);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Subtle gradient background for depth in the light theme */
+  background-image: radial-gradient(circle at 50% 0%, #FFFFFF 0%, var(--bg-color) 70%);
+  min-height: 100vh;
 }
 
 main {
-  max-width: 720px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: calc(var(--nav-height) + 2rem) 1.5rem 4rem 1.5rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-bright);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 section {
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
 }
 
 section h2 {
-  color: var(--text);
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-}
-
-#hero h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0 0 0.25rem;
-}
-
-#hero h2 {
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: var(--muted);
-  margin: 0 0 0.5rem;
-}
-
-#hero p {
-  color: var(--muted);
-  margin: 0;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.025em;
 }
 
 a {
-  color: var(--accent);
+  color: var(--text-bright);
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 a:hover {
-  color: var(--text);
+  color: var(--accent);
+}
+
+/* Glassmorphism Card Style */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(252, 170, 45, 0.4); /* Orange accent tint */
+}
+
+/* Custom Selection */
+::selection {
+  background-color: rgba(252, 170, 45, 0.3);
+  color: #191918;
 }

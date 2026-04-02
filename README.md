@@ -22,8 +22,6 @@ Pushes to `main` automatically deploy via GitHub Actions.
 This section serves as a centralized hub for tracking website development, future features, and ongoing thoughts.
 
 ### Current Objectives
-- [x] Restructure Astro starter into a minimalist digital business card.
-- [x] Setup unified global layout (`BaseLayout` + `<nav>`).
 - [ ] Implement `projects` and `garden` collections.
 - [ ] Build the dynamic pages for projects and garden posts.
 - [ ] Build the stylized HTML Resume page.
@@ -41,3 +39,11 @@ This section serves as a centralized hub for tracking website development, futur
 - [ ] Add real photos for the woodworking portfolio when ready.
 - [ ] Draft the first technical deep-dive post.
 - [ ] **Implement a Dark Mode Toggle**: Add a theme switcher to allow seamlessly jumping between the warm light theme and a sleek dark theme.
+- [ ] **Build a Patchnotes Page**: A dedicated page for short, changelog-style life and site updates.
+- [ ] **Build a Dedicated Blog**: Separate from the garden, or transition the garden fully into a blog format.
+- [ ] **Add a Gaming Section**: A new page/section to highlight gaming interests.
+- [ ] need to edit the about me section
+- [ ] put a photo of myself on the home page, + build the homepage out a little bit, linked in link + instagram, + current interests
+- [ ] put a real project on the projects tab
+- [ ] make the resume tab better, ie have all the parts there + a link to download a real resume
+- [ ] garden (get formatting right with the text, + things that I actually wanna do + nail down the purpose of this tab)

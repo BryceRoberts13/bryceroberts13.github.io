@@ -6,5 +6,6 @@ export const site = {
     email: 'llachlanroberts@gmail.com',
     linkedin: 'https://linkedin.com/in/bryce-roberts13',
     github: 'https://github.com/BryceRoberts13',
+    instagram: 'https://www.instagram.com/bryce_roberts13/',
   },
 };

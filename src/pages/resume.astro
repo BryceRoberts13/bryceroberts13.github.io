@@ -8,7 +8,13 @@ import { site } from '../data/site';
     <div class="header-content fade-in-up">
       <div class="header-top">
         <h1>Resume</h1>
-        <a href={`mailto:${site.contact.email}`} class="glass-btn">Contact Me</a>
+        <div class="header-actions">
+          <a href="/resume.pdf" target="_blank" class="primary-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download PDF
+          </a>
+          <a href={`mailto:${site.contact.email}`} class="glass-btn">Contact Me</a>
+        </div>
       </div>
       <div class="divider"></div>
       <p class="subtitle">A brief overview of my experience and education.</p>
@@ -112,6 +118,37 @@ import { site } from '../data/site';
     background: rgba(252, 170, 45, 0.1);
     border-color: rgba(252, 170, 45, 0.4);
     color: var(--accent);
+  }
+
+  .primary-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    color: var(--bg-dark);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .primary-btn:hover {
+    background: var(--text-bright);
+    border-color: var(--text-bright);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(252, 170, 45, 0.3);
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .icon {
+    flex-shrink: 0;
   }
 
   .subtitle {

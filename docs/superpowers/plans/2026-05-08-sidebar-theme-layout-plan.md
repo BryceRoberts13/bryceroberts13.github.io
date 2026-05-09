@@ -8,6 +8,10 @@
 
 **Tech Stack:** Astro 6, vanilla TypeScript `<script>` module (`src/scripts/shell.ts`), CSS custom properties.
 
+**Status:** Implemented on branch `feat/resume-and-site-updates` (`feat(site): sidebar shell, drawer, theme toggle`). Checklists below marked done for bookkeeping; snippets may differ slightly from final merged code (`main` padding split into `padding-block` / `padding-inline`, mobile sticky menu bar tweaks).
+
+**Artifacts:** [`src/lib/site-storage.ts`](../../src/lib/site-storage.ts), [`src/scripts/shell.ts`](../../src/scripts/shell.ts), [`src/components/Sidebar.astro`](../../src/components/Sidebar.astro), [`src/components/AboutPage.astro`](../../src/components/AboutPage.astro), [`src/layouts/BaseLayout.astro`](../../src/layouts/BaseLayout.astro), [`src/styles/global.css`](../../src/styles/global.css). Previous top nav `src/components/Navigation.astro` removed in favor of `Sidebar.astro`.
+
 ---
 
 ### Task 1: Storage keys module
@@ -15,7 +19,7 @@
 **Files:**
 - Create: `src/lib/site-storage.ts`
 
-- [ ] **Step 1: Add stable key exports**
+- [x] **Step 1: Add stable key exports**
 
 Create `src/lib/site-storage.ts`:
 
@@ -27,7 +31,7 @@ export const SIDEBAR_COLLAPSED_STORAGE_KEY = 'br-site-sidebar-collapsed';
 export type StoredThemePreference = 'light' | 'dark';
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 Run:
 
@@ -43,7 +47,7 @@ git commit -m "chore: add site chrome storage keys"
 **Files:**
 - Modify: `src/styles/global.css`
 
-- [ ] **Step 1: Append layout variables (new `:root` block only for layout)**
+- [x] **Step 1: Append layout variables (new `:root` block only for layout)**
 
 After the closing `}` of the existing `:root { ... }` block (after `--nav-height` line — **do not remove or rename existing light tokens**), append a separate rule:
 
@@ -69,7 +73,7 @@ main {
 
 (Remove dependency on `--nav-height` for main padding.)
 
-- [ ] **Step 2: Add `[data-theme="dark"]` overrides**
+- [x] **Step 2: Add `[data-theme="dark"]` overrides**
 
 Append after layout section:
 
@@ -94,7 +98,7 @@ Append after layout section:
 }
 ```
 
-- [ ] **Step 3: Add shell layout (grid + drawer)**
+- [x] **Step 3: Add shell layout (grid + drawer)**
 
 Append:
 
@@ -244,11 +248,11 @@ Append:
 
 (Edit IDs/class names below if implementations rename — keep selectors aligned with Sidebar markup.)
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify**
 
 Run: `npm run build` — expect SUCCESS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/styles/global.css
@@ -263,7 +267,7 @@ git commit -m "feat(styles): shell layout grid, drawer, dark tokens"
 - Create: `src/scripts/shell.ts`
 - Modify: `src/layouts/BaseLayout.astro`
 
-- [ ] **Step 1: Implement `shell.ts`**
+- [x] **Step 1: Implement `shell.ts`**
 
 Use storage keys:
 
@@ -368,7 +372,7 @@ export function initializeShell(): void {
 initializeShell();
 ```
 
-- [ ] **Step 2: Import script from `Sidebar.astro`**
+- [x] **Step 2: Import script from `Sidebar.astro`**
 
 Add trailing empty line if needed:
 
@@ -378,7 +382,7 @@ Add trailing empty line if needed:
 
 (Astro resolves module path; alternatively use `<script>` with `import '../scripts/shell.ts';` inside component.)
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/scripts/shell.ts src/components/Sidebar.astro src/layouts/BaseLayout.astro
@@ -493,17 +497,17 @@ import AboutPage from '../components/AboutPage.astro';
 - **`body`** opens `.app-shell` with `data-sidebar-collapsed="false"` and `data-drawer-open="false"` defaults; SSR cannot know persisted collapse yet.
 - Immediately after `.app-shell` opens, optional **tiny inline snippet** reads `localStorage` `br-site-sidebar-collapsed` when `matchMedia('(min-width:768px)')` matches and sets `data-sidebar-collapsed="true"` on `.app-shell` to reduce FOUC (mirror key string literals with `SITE_STORAGE_SIDEBAR` comment for manual sync).
 
-- [ ] **Step layout structure**
+- [x] **Step layout structure**
 
 Replace body content with Sidebar + backdrop + `.content-wrap` having slot.
 
-- [ ] **Step: Remove Navigation import.**
+- [x] **Step: Remove Navigation import.**
 
-- [ ] **Run `npm run build`**
+- [x] **Run `npm run build`**
 
 Expect PASS.
 
-- [ ] **Commit**
+- [x] **Commit**
 
 ```
 git add .

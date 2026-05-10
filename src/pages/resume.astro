@@ -1,4 +1,5 @@
 ---
+import SectionGlyph from '../components/SectionGlyph.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
 ---
@@ -7,7 +8,10 @@ import { site } from '../data/site';
   <section class="page-header">
     <div class="header-content fade-in-up">
       <div class="header-top">
-        <h1>Resume</h1>
+        <h1 class="heading-with-icon">
+          <SectionGlyph kind="resume" size={42} />
+          Resume
+        </h1>
         <div class="header-actions">
           <a href="/resume.pdf" target="_blank" class="primary-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -33,8 +37,13 @@ import { site } from '../data/site';
         <div class="item-details">
           <p class="role">Student</p>
           <ul class="achievements">
-            <li>Relevant coursework in core CS fundamentals and mathematics.</li>
-            <li>Involved in hands-on building, woodworking, and software engineering.</li>
+            <li>
+              <strong>Computer science coursework:</strong> Computational Modeling (agent-based modeling, adaptive
+              networks, dynamical systems, evolutionary algorithms, stochastic dynamic programming, machine learning);
+              From NAND to Tetris (logic through assembler, virtual machine, compiler, and OS); MIT 6.790 Graduate
+              Machine Learning.
+            </li>
+            <li>Hands-on building: woodworking, leatherworking, and software engineering projects.</li>
           </ul>
         </div>
       </div>
@@ -43,20 +52,99 @@ import { site } from '../data/site';
     <!-- Experience Section -->
     <section class="resume-section">
       <h2 class="section-title">Experience</h2>
+
       <div class="resume-item glass-card">
         <div class="item-header">
-          <h3>Software Engineer Intern</h3>
-          <span class="date">Summer 2023</span>
+          <h3>Research Intern</h3>
+          <span class="date">Fall 2025</span>
         </div>
         <div class="item-details">
-          <p class="role">Example Tech Company</p>
+          <p class="role">General Intelligence Company — New York, NY (remote)</p>
           <ul class="achievements">
-            <li>Built and deployed full-stack web applications.</li>
-            <li>Optimized frontend performance and reduced load times by 20%.</li>
-            <li>Collaborated with design teams to implement modern UX components.</li>
+            <li>Designed benchmarks for long-context LLM memory: retention and usage across extended contexts.</li>
+            <li>Ran experiments to measure and improve model performance on long-memory tasks.</li>
           </ul>
         </div>
       </div>
+
+      <div class="resume-item glass-card">
+        <div class="item-header">
+          <h3>Software Engineer</h3>
+          <span class="date">Jan 2025 – Aug 2025</span>
+        </div>
+        <div class="item-details">
+          <p class="role">Contraca — Boston, MA</p>
+          <ul class="achievements">
+            <li>Built scalable backend systems and APIs powering dynamic content generation, distribution, and front-end interactivity.</li>
+            <li>Developed web scrapers feeding automated content pipelines.</li>
+            <li>Worked with clients on product direction; attended industry events for market and technology signals.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="resume-item glass-card">
+        <div class="item-header">
+          <h3>Research Collaborator</h3>
+          <span class="date">Spring 2025</span>
+        </div>
+        <div class="item-details">
+          <p class="role">Gupta Lab, MIT CSAIL — Cambridge, MA</p>
+          <ul class="achievements">
+            <li>Research on spoof detection using CLIP embeddings with contrastive and triplet learning.</li>
+            <li>Improved similarity metrics and evaluation methodology for spoof-detection tasks.</li>
+            <li>Contributed to drafting and preparing a paper for publication.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="resume-item glass-card">
+        <div class="item-header">
+          <h3>Research Intern</h3>
+          <span class="date">Jul 2023 – Aug 2023</span>
+        </div>
+        <div class="item-details">
+          <p class="role">Tier 1 Alpha — San Francisco, CA</p>
+          <ul class="achievements">
+            <li>Researched and wrote financial blogs explaining options strategies and core concepts for clients.</li>
+            <li>Automated parts of the content workflow to speed production and tailor delivery.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Accolades Section -->
+    <section class="resume-section">
+      <h2 class="section-title">Accolades</h2>
+
+      <div class="resume-item glass-card">
+        <div class="item-header">
+          <h3>Varsity swimming — NCAA Division III</h3>
+          <span class="date">Sep 2023 – present</span>
+        </div>
+        <div class="item-details">
+          <p class="role">Massachusetts Institute of Technology</p>
+          <ul class="achievements">
+            <li>NEWMAC champion, 100m butterfly — conference record.</li>
+            <li>NEWMAC Rookie Athlete of the Year.</li>
+            <li>NCAA national championships — competed in four relay and two individual events.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="resume-item glass-card">
+        <div class="item-header">
+          <h3>MIT class ring committee</h3>
+          <span class="date">Spring 2024 – Spring 2025</span>
+        </div>
+        <div class="item-details">
+          <p class="role">Artist &amp; Study Break Chair · 12-member committee</p>
+          <ul class="achievements">
+            <li>Planned and led Study Break to gather class input on ring design.</li>
+            <li>Coordinated vendors and stakeholders for design presentation and ring delivery events.</li>
+          </ul>
+        </div>
+      </div>
+
     </section>
 
     <!-- Skills Section -->
@@ -64,16 +152,31 @@ import { site } from '../data/site';
       <h2 class="section-title">Skills</h2>
       <div class="skills-grid glass-card">
         <div class="skill-category">
-          <h3>Languages/Frameworks</h3>
-          <p>TypeScript, React, Astro, Python, HTML/CSS</p>
+          <h3>Languages</h3>
+          <p>Python, TypeScript, JavaScript, HTML/CSS, Bash, AppleScript</p>
         </div>
         <div class="skill-category">
-          <h3>Tools</h3>
-          <p>Git, GitHub Actions, Vercel, Figma</p>
+          <h3>ML & AI</h3>
+          <p>
+            Deep learning (RNNs), CLIP-style embeddings, contrastive &amp; triplet learning, LLM
+            benchmarking &amp; evaluation, time-series modeling, class imbalance, utility-aware
+            losses
+          </p>
         </div>
         <div class="skill-category">
-          <h3>Hardware/Crafts</h3>
-          <p>Woodworking, Leatherworking, Soldering</p>
+          <h3>Engineering &amp; web</h3>
+          <p>
+            Backend &amp; API design, web scraping (Selenium, BeautifulSoup), data &amp; content
+            pipelines, Astro, React, Git, GitHub Actions
+          </p>
+        </div>
+        <div class="skill-category">
+          <h3>Systems &amp; tooling</h3>
+          <p>QMK firmware, Karabiner-Elements, macOS automation</p>
+        </div>
+        <div class="skill-category">
+          <h3>Hardware / crafts</h3>
+          <p>Woodworking, leatherworking, soldering, stop-motion sculpture</p>
         </div>
       </div>
     </section>

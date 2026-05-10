@@ -1,0 +1,277 @@
+---
+import SectionGlyph from './SectionGlyph.astro';
+import type { SectionGlyphKind } from './SectionGlyph.astro';
+import { getCollection } from 'astro:content';
+import { site } from '../data/site';
+
+const PREVIEW_LIMIT = 6;
+
+function previewDate(d: Date) {
+  const y = d.getFullYear();
+  const nowY = new Date().getFullYear();
+  if (y === nowY) {
+    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  }
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+const gardenRaw = await getCollection('garden');
+gardenRaw.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const notesItems = gardenRaw.slice(0, PREVIEW_LIMIT).map((e) => ({
+  href: `/garden/${e.id}`,
+  title: e.data.title,
+  date: e.data.date,
+}));
+
+const projectsRaw = await getCollection('projects');
+projectsRaw.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const projectItems = projectsRaw.slice(0, PREVIEW_LIMIT).map((e) => ({
+  href: `/projects/${e.id}`,
+  title: e.data.title,
+  date: e.data.date,
+}));
+
+type PreviewSection = {
+  title: string;
+  glyph: SectionGlyphKind;
+  subtitle: string;
+  viewAllHref: string;
+  items: { href: string; title: string; date: Date }[];
+  empty: string;
+};
+
+const sections: PreviewSection[] = [
+  {
+    title: 'Projects',
+    glyph: 'projects',
+    subtitle: "Software, systems, and things I've built.",
+    viewAllHref: '/projects',
+    items: projectItems,
+    empty: 'No projects yet.',
+  },
+  {
+    title: 'Garden',
+    glyph: 'garden',
+    subtitle: 'Thoughts, patch notes, and technical deep dives.',
+    viewAllHref: '/garden',
+    items: notesItems,
+    empty: 'No notes yet.',
+  },
+];
+
+const glyphSize = 38;
+---
+
+<div class="home-below">
+  {
+    sections.map((sec) => (
+      <section class="home-preview-block" aria-labelledby={`home-${sec.glyph}-heading`}>
+        <h2 id={`home-${sec.glyph}-heading`} class="home-preview-heading-host">
+          <a href={sec.viewAllHref} class="home-preview-heading heading-with-icon home-preview-heading-link">
+            <SectionGlyph kind={sec.glyph} size={glyphSize} />
+            {sec.title}
+          </a>
+        </h2>
+        <p class="home-preview-subtitle">{sec.subtitle}</p>
+
+        {sec.items.length === 0 ? (
+          <p class="home-preview-empty">{sec.empty}</p>
+        ) : (
+          <ul class="home-preview-list">
+            {sec.items.map((item) => (
+              <li>
+                <a href={item.href} class="home-preview-row">
+                  <time class="home-preview-time" datetime={item.date.toISOString()}>
+                    {previewDate(item.date)}
+                  </time>
+                  <span class="home-preview-title">{item.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <a href={sec.viewAllHref} class="home-preview-view-all">
+          View all <span class="home-preview-view-all-arrow" aria-hidden="true">→</span>
+        </a>
+      </section>
+    ))
+  }
+
+  <section class="home-preview-block home-resume-block" aria-labelledby="home-resume-heading">
+    <h2 id="home-resume-heading" class="home-preview-heading-host">
+      <a href="/resume" class="home-preview-heading heading-with-icon home-preview-heading-link">
+        <SectionGlyph kind="resume" size={glyphSize} />
+        Resume
+      </a>
+    </h2>
+    <p class="home-preview-subtitle">A brief overview of experience and education.</p>
+    <p class="home-resume-lead">
+      {site.title} —
+      <a href="/resume">Resume</a>,{' '}
+      <a href={`mailto:${site.contact.email}`}>email</a>, or{' '}
+      <a href={site.contact.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
+    </p>
+  </section>
+</div>
+
+<style>
+  .home-below {
+    margin-top: clamp(1rem, 3vw, 2rem);
+    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+    border-top: 1px solid var(--card-border);
+  }
+
+  section.home-preview-block {
+    margin-bottom: clamp(2.5rem, 6vw, 3.75rem);
+  }
+
+  section.home-preview-block:last-child {
+    margin-bottom: 0;
+  }
+
+  .home-preview-heading-host {
+    margin: 0 0 0.35rem;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  .home-preview-heading {
+    font-size: clamp(1.65rem, 4vw, 2.25rem);
+    letter-spacing: -0.03em;
+    color: var(--text-bright);
+  }
+
+  .home-preview-heading-link {
+    text-decoration: none;
+    color: inherit;
+    border-radius: 6px;
+    margin-inline: -0.15rem;
+    padding-inline: 0.15rem;
+  }
+
+  .home-preview-heading-link:hover {
+    color: var(--accent);
+  }
+
+  .home-preview-heading-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .home-preview-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-main);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+
+  .home-preview-empty {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    opacity: 0.85;
+    margin-bottom: 1rem;
+  }
+
+  .home-preview-list {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    border-top: 1px solid var(--card-border);
+  }
+
+  .home-preview-list li {
+    margin: 0;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .home-preview-row {
+    display: grid;
+    grid-template-columns: minmax(5.5rem, 7.25rem) minmax(0, 1fr);
+    gap: 0.65rem 1.15rem;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.12s ease;
+    border-radius: 6px;
+    margin-inline: -0.25rem;
+    padding-inline: 0.25rem;
+  }
+
+  @media (max-width: 480px) {
+    .home-preview-row {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+  }
+
+  .home-preview-row:hover {
+    background: color-mix(in srgb, var(--card-bg) 65%, transparent);
+  }
+
+  .home-preview-row:hover .home-preview-title {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+
+  .home-preview-row:hover .home-preview-time {
+    color: var(--text-main);
+  }
+
+  .home-preview-time {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-main);
+    white-space: nowrap;
+  }
+
+  .home-preview-title {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1.35;
+  }
+
+  .home-preview-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-decoration: none;
+  }
+
+  .home-preview-view-all:hover {
+    color: var(--accent);
+  }
+
+  .home-preview-view-all-arrow {
+    transition: transform 0.15s ease;
+  }
+
+  .home-preview-view-all:hover .home-preview-view-all-arrow {
+    transform: translateX(3px);
+  }
+
+  .home-resume-lead {
+    font-size: 1rem;
+    color: var(--text-main);
+    line-height: 1.65;
+    max-width: 36rem;
+  }
+
+  .home-resume-lead a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .home-resume-lead a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+</style>

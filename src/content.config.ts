@@ -5,12 +5,20 @@ const aboutCollection = defineCollection({
   loader: glob({ base: './src/content', pattern: 'about.md' }),
 });
 
+const projectCategorySchema = z.enum([
+  'coding',
+  'leatherworking',
+  'woodworking',
+  'animation',
+]);
+
 const projectsCollection = defineCollection({
   loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
     date: z.date(),
+    category: projectCategorySchema.default('coding'),
     tags: z.array(z.string()).default([]),
     link: z.string().url().optional(),
     github: z.string().url().optional(),

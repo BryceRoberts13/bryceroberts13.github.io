@@ -10,6 +10,51 @@ function qs<T extends HTMLElement = HTMLElement>(sel: string): T | null {
 
 const DRAWER_MEDIA = window.matchMedia('(max-width: 767px)');
 
+/** Clears pending width→rail transition listener (collapse) and fallback timer */
+let railLayoutTransitionCleanup: (() => void) | null = null;
+
+function clearPendingRailLayoutTransition() {
+  railLayoutTransitionCleanup?.();
+  railLayoutTransitionCleanup = null;
+}
+
+function scheduleRailLayoutAfterSidebarWidthTransition(shell: HTMLElement): void {
+  const sidebar = qs<HTMLElement>('#site-sidebar');
+  if (!sidebar) {
+    shell.dataset.railLayout = 'true';
+    return;
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    shell.dataset.railLayout = 'true';
+    return;
+  }
+
+  clearPendingRailLayoutTransition();
+
+  const onEnd = (event: TransitionEvent) => {
+    if (event.target !== sidebar || event.propertyName !== 'width') return;
+    shell.dataset.railLayout = 'true';
+    cleanup();
+  };
+
+  const timeoutId = window.setTimeout(() => {
+    if (shell.dataset.sidebarCollapsed === 'true') {
+      shell.dataset.railLayout = 'true';
+    }
+    cleanup();
+  }, 650);
+
+  function cleanup() {
+    sidebar.removeEventListener('transitionend', onEnd);
+    window.clearTimeout(timeoutId);
+    railLayoutTransitionCleanup = null;
+  }
+
+  sidebar.addEventListener('transitionend', onEnd);
+  railLayoutTransitionCleanup = cleanup;
+}
+
 function getStoredThemePreference(): StoredThemePreference | null {
   const raw = localStorage.getItem(THEME_STORAGE_KEY);
   return raw === 'light' || raw === 'dark' ? raw : null;
@@ -30,10 +75,9 @@ function refreshThemeToggleLabel() {
   if (!themeToggle) return;
 
   const current = readResolvedThemeAttr();
-  themeToggle.setAttribute(
-    'aria-label',
-    current === 'dark' ? 'Switch to light mode' : 'Switch to dark mode',
-  );
+  const label = current === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  themeToggle.setAttribute('aria-label', label);
+  themeToggle.setAttribute('title', label);
 }
 
 function refreshSidebarToggleState(shell: HTMLElement) {
@@ -42,17 +86,27 @@ function refreshSidebarToggleState(shell: HTMLElement) {
 
   const collapsed = shell.dataset.sidebarCollapsed === 'true';
   sidebarToggle.setAttribute('aria-pressed', collapsed ? 'true' : 'false');
-  sidebarToggle.setAttribute(
-    'aria-label',
-    collapsed ? 'Show sidebar navigation' : 'Hide sidebar navigation',
-  );
-  sidebarToggle.textContent = collapsed ? 'Show sidebar' : 'Hide sidebar';
+  const label = collapsed
+    ? 'Expand sidebar to full width'
+    : 'Collapse sidebar to icon rail';
+  sidebarToggle.setAttribute('aria-label', label);
+  sidebarToggle.setAttribute('title', label);
 }
 
 function setCollapsed(shell: HTMLElement, collapsed: boolean) {
   if (DRAWER_MEDIA.matches) return;
 
-  shell.dataset.sidebarCollapsed = collapsed ? 'true' : 'false';
+  clearPendingRailLayoutTransition();
+
+  if (!collapsed) {
+    shell.dataset.railLayout = 'false';
+    shell.dataset.sidebarCollapsed = 'false';
+  } else {
+    shell.dataset.sidebarCollapsed = 'true';
+    shell.dataset.railLayout = 'false';
+    scheduleRailLayoutAfterSidebarWidthTransition(shell);
+  }
+
   localStorage.setItem(SIDEBAR_COLLAPSED_STORAGE_KEY, collapsed ? 'true' : 'false');
   refreshSidebarToggleState(shell);
 }
@@ -70,12 +124,15 @@ function setDrawer(shell: HTMLElement, open: boolean) {
 function syncResponsiveShell(shell: HTMLElement) {
   if (DRAWER_MEDIA.matches) {
     shell.removeAttribute('data-sidebar-collapsed');
+    shell.dataset.railLayout = 'false';
     shell.dataset.drawerOpen = 'false';
     const opener = qs<HTMLButtonElement>('#mobile-open-menu');
     if (opener) opener.setAttribute('aria-expanded', 'false');
+    clearPendingRailLayoutTransition();
   } else {
     const collapsed = localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY) === 'true';
     shell.dataset.sidebarCollapsed = collapsed ? 'true' : 'false';
+    shell.dataset.railLayout = collapsed ? 'true' : 'false';
     refreshSidebarToggleState(shell);
   }
 }

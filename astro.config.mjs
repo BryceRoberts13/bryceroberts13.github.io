@@ -4,4 +4,8 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://bryceroberts13.github.io',
   base: '/',
+  redirects: {
+    '/blog': '/garden',
+    '/blog/[slug]': '/garden/[slug]',
+  },
 });

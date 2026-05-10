@@ -1,40 +1,107 @@
 ---
+import type { CollectionEntry } from 'astro:content';
+import SectionGlyph from '../../components/SectionGlyph.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
+type ProjectCategory = 'coding' | 'leatherworking' | 'woodworking' | 'animation';
+
+const SECTION_CONFIG: readonly {
+  category: ProjectCategory;
+  title: string;
+  blurb: string;
+}[] = [
+  {
+    category: 'coding',
+    title: 'Coding',
+    blurb: 'Software, systems, and tools.',
+  },
+  {
+    category: 'leatherworking',
+    title: 'Leatherworking',
+    blurb: 'Bags, wallets, and small goods.',
+  },
+  {
+    category: 'woodworking',
+    title: 'Woodworking',
+    blurb: 'Furniture, shop projects, and builds.',
+  },
+  {
+    category: 'animation',
+    title: 'Animation',
+    blurb: 'Stop-motion and moving-image work.',
+  },
+];
+
 const projects = await getCollection('projects');
 projects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function byCategory(cat: ProjectCategory): CollectionEntry<'projects'>[] {
+  return projects.filter((p) => p.data.category === cat);
+}
+
+let cardIndex = 0;
 ---
 
 <BaseLayout title="Projects | Bryce Roberts">
   <section class="page-header">
     <div class="header-content fade-in-up">
-      <h1>Projects</h1>
+      <h1 class="heading-with-icon">
+        <SectionGlyph kind="projects" size={42} />
+        Projects
+      </h1>
       <div class="divider"></div>
-      <p class="subtitle">Software, systems, and things I've built.</p>
+      <p class="subtitle">Code, leather, and wood: work across different media.</p>
     </div>
   </section>
 
-  <section class="projects-grid">
-    {projects.map((project, index) => (
-      <a href={`/projects/${project.id}`} class="project-card glass-card fade-in-up" style={`animation-delay: ${0.1 * (index + 1)}s;`}>
-        <div class="card-content">
-          <h2>{project.data.title}</h2>
-          <p>{project.data.description}</p>
-          <div class="tags">
-            {project.data.tags?.map(tag => (
-              <span class="tag">{tag}</span>
-            ))}
+  {
+    SECTION_CONFIG.map((sec) => {
+      const sectionProjects = byCategory(sec.category);
+      return (
+        <section class="project-section" aria-labelledby={`section-${sec.category}`}>
+          <div class="section-intro">
+            <h2 id={`section-${sec.category}`} class="section-title">
+              {sec.title}
+            </h2>
+            <p class="section-blurb">{sec.blurb}</p>
           </div>
-        </div>
-      </a>
-    ))}
-  </section>
+          {sectionProjects.length === 0 ? (
+            <p class="section-empty">Nothing here yet.</p>
+          ) : (
+            <div class="projects-grid">
+              {sectionProjects.map((project) => {
+                cardIndex += 1;
+                const delay = 0.1 * cardIndex;
+                return (
+                  <a
+                    href={`/projects/${project.id}`}
+                    class="project-card glass-card fade-in-up"
+                    style={`animation-delay: ${delay}s;`}
+                  >
+                    <div class="card-content">
+                      <h3>{project.data.title}</h3>
+                      <p>{project.data.description}</p>
+                      <div class="tags">
+                        {project.data.tags?.map((tag) => (
+                          <span class="tag">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      );
+    })
+  }
 </BaseLayout>
 
 <style>
   .page-header {
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
   }
 
   h1 {
@@ -57,6 +124,42 @@ projects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
     border-radius: 2px;
   }
 
+  .project-section {
+    margin-bottom: clamp(3rem, 8vw, 4.5rem);
+  }
+
+  .project-section:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .section-intro {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-bright);
+    margin: 0 0 0.35rem;
+  }
+
+  .section-blurb {
+    margin: 0;
+    font-size: 0.98rem;
+    color: var(--text-main);
+    line-height: 1.5;
+    max-width: 40rem;
+  }
+
+  .section-empty {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    opacity: 0.85;
+    font-style: italic;
+  }
+
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -71,14 +174,14 @@ projects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
     cursor: pointer;
   }
 
-  .project-card h2 {
+  .project-card h3 {
     font-size: 1.25rem;
     margin-bottom: 0.75rem;
     color: var(--text-bright);
     transition: color 0.2s ease;
   }
 
-  .project-card:hover h2 {
+  .project-card:hover h3 {
     color: var(--accent);
   }
 

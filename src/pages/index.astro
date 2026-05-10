@@ -1,6 +1,11 @@
 ---
-import AboutPage from '../components/AboutPage.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeBelowFold from '../components/HomeBelowFold.astro';
+import HomeHero from '../components/HomeHero.astro';
 import { site } from '../data/site';
 ---
 
-<AboutPage title={site.name} />
+<BaseLayout title={site.name}>
+  <HomeHero />
+  <HomeBelowFold />
+</BaseLayout>

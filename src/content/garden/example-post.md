@@ -2,7 +2,7 @@
 title: "Setting up a Digital Garden"
 description: "My thoughts on learning in public and maintaining a digital garden."
 date: 2024-02-01
-tags: ["Learning", "Astro"]
+tags: ["Learning", "Astro", "patch-notes"]
 ---
 
 Welcome to my digital garden! 

@@ -1,0 +1,366 @@
+---
+import { Image } from 'astro:assets';
+import SectionGlyph from './SectionGlyph.astro';
+import type { SectionGlyphKind } from './SectionGlyph.astro';
+import profilePhoto from '../assets/profile.png';
+import { site } from '../data/site';
+
+const navItems: readonly { label: string; href: string; glyph: SectionGlyphKind }[] = [
+  { label: 'Home', href: '/', glyph: 'home' },
+  { label: 'Projects', href: '/projects', glyph: 'projects' },
+  { label: 'Garden', href: '/garden', glyph: 'garden' },
+  { label: 'Resume', href: '/resume', glyph: 'resume' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<aside id="site-sidebar" class="sidebar" aria-label="Site navigation">
+  <div class="sidebar-inner">
+    <div class="logo-row">
+      <a href="/" class="logo-link" aria-label={`${site.name} (home)`}>
+        <Image
+          class="sidebar-avatar"
+          src={profilePhoto}
+          alt=""
+          width={36}
+          height={36}
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+        />
+        <span class="logo">{site.name.split(' ').map((chunk) => chunk[0]).join('').slice(0, 4).toUpperCase()}</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav" aria-label="Primary">
+      <ul class="nav-stack">
+        {navItems.map((item) => {
+          const isActive =
+            item.href === '/'
+              ? currentPath === '/'
+              : currentPath.startsWith(item.href);
+
+          return (
+            <li>
+              <a href={item.href} class:list={[{ active: isActive }]}>
+                <SectionGlyph kind={item.glyph} size={19} />
+                <span class="nav-label">{item.label}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+
+    <div class="social-stack" aria-label="Social links">
+      <a href={`mailto:${site.contact.email}`} class="social-chip" title="Email" aria-label="Email">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      </a>
+      <a href={site.contact.github} class="social-chip" title="GitHub" aria-label="GitHub (opens in new tab)" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+      </a>
+      <a href={site.contact.linkedin} class="social-chip" title="LinkedIn" aria-label="LinkedIn (opens in new tab)" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+      <a href={site.contact.instagram} class="social-chip" title="Instagram" aria-label="Instagram (opens in new tab)" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+      </a>
+    </div>
+
+    <div class="logo-toolbar">
+      <button
+        type="button"
+        class="toolbar-icon-btn"
+        id="desktop-sidebar-toggle"
+        aria-pressed="false"
+        aria-label="Collapse sidebar to icon rail"
+        title="Collapse sidebar to icon rail"
+      >
+        <svg
+          class="sidebar-rail-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="5" x2="19" y1="8" y2="8" />
+          <line x1="8" x2="16" y1="12" y2="12" />
+          <line x1="10" x2="14" y1="16" y2="16" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="toolbar-icon-btn"
+        data-theme-toggle
+        aria-label="Toggle color theme"
+      >
+        <svg
+          class="theme-toggle-icon theme-toggle-icon-moon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg
+          class="theme-toggle-icon theme-toggle-icon-sun"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    isolation: isolate;
+  }
+
+  .sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: var(--shell-gap);
+    min-height: 100vh;
+    position: relative;
+    transition:
+      padding var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      gap var(--sidebar-transition-duration) var(--sidebar-transition-ease);
+  }
+
+  @media (max-width: 767px) {
+    .sidebar-inner {
+      min-height: 100%;
+      padding-block: calc(var(--shell-gap) + 4px);
+    }
+  }
+
+  .sidebar-nav {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.85rem;
+  }
+
+  .logo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+  }
+
+  .logo-link:hover .logo {
+    color: var(--accent);
+  }
+
+  .sidebar-avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid var(--card-border);
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--text-bright);
+    letter-spacing: -0.05em;
+  }
+
+  .logo-toolbar {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    margin-top: auto;
+    align-self: flex-start;
+    width: 100%;
+    transition: gap var(--sidebar-transition-duration) var(--sidebar-transition-ease);
+  }
+
+  .toolbar-icon-btn {
+    display: grid;
+    place-items: center;
+    position: relative;
+    width: 2.65rem;
+    height: 2.65rem;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-main);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    cursor: pointer;
+    transition:
+      transform 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .toolbar-icon-btn:hover {
+    color: var(--accent);
+    border-color: rgba(252, 170, 45, 0.45);
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transform: translateY(-1px);
+  }
+
+  .toolbar-icon-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .toolbar-icon-btn svg {
+    grid-area: 1 / 1;
+  }
+
+  .nav-stack {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+    width: 100%;
+  }
+
+  .nav-stack li {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .nav-stack a {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-main);
+    padding: 0.5rem 0.85rem;
+    margin: 0;
+    border-radius: 8px;
+    border-left: 2px solid transparent;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background 0.15s ease,
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      padding var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      width var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      min-width var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      height var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      min-height var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      gap var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      border-radius var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      border-left-width var(--sidebar-transition-duration) var(--sidebar-transition-ease);
+  }
+
+  .nav-label {
+    position: static;
+    width: auto;
+    height: auto;
+    clip: unset;
+    clip-path: unset;
+    margin: 0;
+    overflow: visible;
+    white-space: normal;
+    border: 0;
+  }
+
+  .nav-stack a:hover,
+  .nav-stack a.active {
+    color: var(--text-bright);
+    border-left-color: var(--accent);
+  }
+
+  .social-stack {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.35rem;
+    transition: gap var(--sidebar-transition-duration) var(--sidebar-transition-ease);
+  }
+
+  .social-chip {
+    display: grid;
+    place-items: center;
+    width: 2.65rem;
+    height: 2.65rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-main);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transition:
+      transform 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .social-chip svg {
+    display: block;
+  }
+
+  .social-chip:hover {
+    color: var(--accent);
+    border-color: rgba(252, 170, 45, 0.45);
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transform: translateY(-1px);
+  }
+
+  .social-chip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  import '../scripts/shell.ts';
+</script>

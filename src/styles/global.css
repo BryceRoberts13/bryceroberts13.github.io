@@ -16,6 +16,15 @@
   --nav-height: 80px;
 }
 
+:root {
+  /* Shell layout additions only */
+  --sidebar-width: clamp(240px, 22vw, 280px);
+  --sidebar-rail-width: clamp(52px, 3.85rem, 68px);
+  --shell-gap: clamp(1.25rem, 3vw, 2rem);
+  --sidebar-transition-duration: 0.42s;
+  --sidebar-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -33,16 +42,16 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  /* Subtle gradient background for depth in the light theme */
-  background-image: radial-gradient(circle at 50% 0%, #FFFFFF 0%, var(--bg-color) 70%);
   min-height: 100vh;
 }
 
 main {
   max-width: 800px;
-  margin: 0 auto;
-  padding: calc(var(--nav-height) + 2rem) 1.5rem 4rem 1.5rem;
+  margin-inline: auto;
+  width: 100%;
+  padding-block: var(--shell-gap);
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
+  padding-bottom: 4rem;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -71,6 +80,18 @@ a:hover {
   color: var(--accent);
 }
 
+/** Page intros: icon beside main title */
+.heading-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.heading-with-icon > .section-glyph {
+  color: var(--accent);
+  opacity: 0.93;
+}
+
 /* Glassmorphism Card Style */
 .glass-card {
   background: var(--card-bg);
@@ -91,4 +112,325 @@ a:hover {
 ::selection {
   background-color: rgba(252, 170, 45, 0.3);
   color: #191918;
+}
+
+[data-theme='dark'] {
+  --bg-color: #121211;
+  --text-main: #b7b7b5;
+  --text-bright: #f5f5f4;
+  --accent: #fcaa2d;
+  --card-bg: rgba(30, 30, 29, 0.55);
+  --card-border: rgba(245, 245, 244, 0.1);
+  --glass-bg: rgba(18, 18, 17, 0.85);
+}
+
+[data-theme='dark'] ::selection {
+  background-color: rgba(252, 170, 45, 0.35);
+  color: var(--text-bright);
+}
+
+[data-theme='dark'] .glass-card:hover {
+  background: rgba(42, 42, 41, 0.75);
+  border-color: rgba(252, 170, 45, 0.45);
+}
+
+.app-shell {
+  display: grid;
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell,
+  #site-sidebar,
+  .drawer-backdrop,
+  #site-sidebar .sidebar-inner,
+  #site-sidebar .nav-stack a,
+  #site-sidebar .social-stack,
+  #site-sidebar .logo-toolbar {
+    transition-duration: 0ms !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+.drawer-backdrop {
+  display: none;
+}
+
+.content-wrap {
+  min-width: 0;
+}
+
+.top-mobile-bar {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .top-mobile-bar {
+    display: flex;
+    gap: 0.75rem;
+    position: sticky;
+    top: var(--shell-gap);
+    margin-bottom: calc(-1 * var(--shell-gap));
+    z-index: 120;
+    padding-bottom: var(--shell-gap);
+  }
+
+  main {
+    padding-top: calc(var(--shell-gap) + 3rem);
+  }
+
+  .app-shell {
+    grid-template-columns: minmax(0, 1fr);
+    transition: none;
+  }
+
+  .app-shell[data-sidebar-collapsed='true'],
+  .app-shell[data-sidebar-collapsed='false'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #site-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(288px, 86vw);
+    transform: translateX(-100%);
+    z-index: 300;
+    background: var(--glass-bg);
+    backdrop-filter: blur(14px);
+    border-right: 1px solid var(--card-border);
+    overflow-y: auto;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: transform 0.24s ease;
+  }
+
+  .app-shell[data-drawer-open='true'] #site-sidebar {
+    transform: translateX(0);
+  }
+
+  .drawer-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+  }
+
+  .app-shell[data-drawer-open='true'] .drawer-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #desktop-sidebar-toggle {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .app-shell {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  #mobile-open-menu {
+    display: none !important;
+  }
+
+  #site-sidebar {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    width: var(--sidebar-width);
+    min-width: 0;
+    height: 100vh;
+    border-right: 1px solid var(--card-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(14px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    transition:
+      width var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      border-color 0.25s ease;
+  }
+
+  .app-shell[data-sidebar-collapsed='true'] #site-sidebar {
+    width: var(--sidebar-rail-width);
+    border-right-color: var(--card-border);
+  }
+
+  .drawer-backdrop {
+    display: none !important;
+  }
+
+  /* Icon rail when JS has finished the width transition (data-rail-layout) */
+  .app-shell[data-rail-layout='true'] #site-sidebar .sidebar-inner {
+    align-items: center;
+    padding: 0.75rem 0.35rem calc(var(--shell-gap) + 0.35rem);
+    gap: 0.45rem;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .sidebar-nav {
+    order: 1;
+    width: 100%;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .social-stack {
+    order: 2;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    /* Extra space below primary nav (flex gap is small) */
+    margin-top: 1.35rem;
+    width: 100%;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .logo-row {
+    display: none;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .logo-toolbar {
+    order: 3;
+    margin-top: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+    width: 100%;
+    align-self: center;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack {
+    gap: 0.35rem;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack li {
+    display: flex;
+    justify-content: center;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a {
+    position: relative;
+    justify-content: center;
+    width: 2.65rem;
+    min-width: 2.65rem;
+    height: 2.65rem;
+    min-height: 2.65rem;
+    padding: 0;
+    gap: 0;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .nav-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Primary nav: solid rounded “tile” on hover/active (not used for social chips) */
+  .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a:hover,
+  .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a.active {
+    border-left-color: transparent;
+    color: var(--text-bright);
+    background: #ffffff;
+    border: 1px solid rgba(25, 25, 24, 0.1);
+    box-shadow: 0 1px 4px rgba(25, 25, 24, 0.12);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transform: none;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a:hover .section-glyph,
+  .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a.active .section-glyph {
+    color: var(--accent);
+  }
+
+  [data-theme='dark'] .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a:hover,
+  [data-theme='dark'] .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a.active {
+    background: rgba(245, 245, 244, 0.14);
+    border-color: rgba(245, 245, 244, 0.18);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    color: var(--text-bright);
+  }
+
+  /* Contact / social: no filled hover tile in rail (icon color only) */
+  .app-shell[data-rail-layout='true'] #site-sidebar .social-chip {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .social-chip:hover,
+  .app-shell[data-rail-layout='true'] #site-sidebar .social-chip:focus-visible {
+    background: transparent !important;
+    border-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    color: var(--accent);
+  }
+
+  .app-shell[data-rail-layout='true'] #site-sidebar .toolbar-icon-btn:hover {
+    box-shadow: 0 2px 8px rgba(25, 25, 24, 0.1);
+  }
+
+  [data-theme='dark'] .app-shell[data-rail-layout='true'] #site-sidebar .toolbar-icon-btn:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  }
+}
+
+.mobile-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 2.75rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-bright);
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.mobile-menu-trigger:hover {
+  border-color: rgba(252, 170, 45, 0.45);
+  color: var(--accent);
+}
+
+.mobile-menu-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Sidebar theme toggle lives next to logo; icons swap from html[data-theme] */
+[data-theme-toggle] .theme-toggle-icon {
+  display: none;
+}
+
+html:not([data-theme]) [data-theme-toggle] .theme-toggle-icon-moon,
+html[data-theme='light'] [data-theme-toggle] .theme-toggle-icon-moon {
+  display: block;
+}
+
+html[data-theme='dark'] [data-theme-toggle] .theme-toggle-icon-sun {
+  display: block;
 }

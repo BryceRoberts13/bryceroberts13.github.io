@@ -1,0 +1,184 @@
+---
+import { Image } from 'astro:assets';
+import profilePhoto from '../assets/profile.png';
+import { site } from '../data/site';
+
+const first = site.name.split(' ')[0] ?? site.name;
+---
+
+<section class="home-hero" aria-label="Introduction">
+  <div class="home-hero-inner">
+    <div class="home-hero-copy">
+      <h1 class="home-hero-title">Hey, I'm {first}!</h1>
+      <p class="home-hero-lede">
+        I'm an MIT student who likes building things from wood, leather, and code. I care how systems fit
+        together, and I'm a top-down learner: map first, details after. Sometimes I write
+        <a href="/garden">in the garden</a>.
+      </p>
+      <p class="home-hero-tagline">{site.tagline}</p>
+      <div class="home-hero-actions">
+        <a href="/resume" class="home-hero-btn">
+          <svg class="home-hero-btn-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" x2="8" y1="13" y2="13" />
+            <line x1="16" x2="8" y1="17" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
+          Resume
+        </a>
+        <a href={`mailto:${site.contact.email}`} class="home-hero-btn">
+          <svg class="home-hero-btn-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+          Email me
+        </a>
+      </div>
+    </div>
+    <div class="home-hero-visual">
+      <div class="home-hero-photo-ring">
+        <Image
+          class="home-hero-photo"
+          src={profilePhoto}
+          alt={site.name}
+          width={280}
+          height={280}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-hero {
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    padding-block: clamp(0.5rem, 2vw, 1.25rem);
+    color: var(--text-main);
+  }
+
+  .home-hero-inner {
+    max-width: min(56rem, 100%);
+    margin-inline: auto;
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 3rem);
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .home-hero-inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      justify-content: space-between;
+    }
+  }
+
+  .home-hero-title {
+    margin: 0 0 1rem;
+    font-size: clamp(1.85rem, 4.2vw, 2.45rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: var(--text-bright);
+  }
+
+  .home-hero-lede {
+    margin: 0 0 0.85rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    max-width: 36rem;
+  }
+
+  .home-hero-tagline {
+    margin: 0 0 1.35rem;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    opacity: 0.92;
+    max-width: 36rem;
+  }
+
+  .home-hero-lede a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .home-hero-lede a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .home-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .home-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.95rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    text-decoration: none;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .home-hero-btn:hover {
+    border-color: rgba(252, 170, 45, 0.45);
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  [data-theme='dark'] .home-hero-btn:hover {
+    background: rgba(42, 42, 41, 0.75);
+  }
+
+  .home-hero-btn-icon {
+    flex-shrink: 0;
+    opacity: 0.9;
+  }
+
+  .home-hero-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (min-width: 768px) {
+    .home-hero-visual {
+      justify-content: flex-end;
+    }
+  }
+
+  .home-hero-photo-ring {
+    width: min(220px, 70vw);
+    height: min(220px, 70vw);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 32%, var(--bg-color));
+    display: grid;
+    place-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid var(--card-border);
+  }
+
+  .home-hero-photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+</style>

@@ -114,14 +114,40 @@ const formattedDate = new Date(post.data.date).toLocaleDateString('en-US', {
     margin-bottom: 1.5rem;
   }
 
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 1.5rem;
+    padding-left: 1.75rem;
+  }
+
+  .prose :global(ol) {
+    list-style: decimal;
+    font-variant-numeric: tabular-nums;
+  }
+
   .prose :global(ul) {
-    margin-bottom: 1.5rem;
-    padding-left: 1.5rem;
+    list-style: disc;
   }
 
   .prose :global(li) {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.65rem;
+    padding-left: 0.35rem;
   }
+
+  .prose :global(li::marker) {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.95em;
+  }
+
+  .prose :global(li > p) {
+    margin-bottom: 0.65rem;
+  }
+
+  .prose :global(li > p:last-child) {
+    margin-bottom: 0;
+  }
+
   
   .prose :global(pre) {
     background: rgba(15, 23, 42, 0.8);

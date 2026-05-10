@@ -1,40 +1,52 @@
 ---
+import GardenPostList from '../../components/GardenPostList.astro';
+import SectionGlyph from '../../components/SectionGlyph.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
+const PATCH_NOTES_TAG = 'patch-notes';
+
 const posts = await getCollection('garden');
 posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const patchPosts = posts.filter((p) => p.data.tags?.includes(PATCH_NOTES_TAG));
+const mainPosts = posts.filter((p) => !p.data.tags?.includes(PATCH_NOTES_TAG));
 ---
 
 <BaseLayout title="Digital Garden | Bryce Roberts">
   <section class="page-header">
     <div class="header-content fade-in-up">
-      <h1>Digital Garden</h1>
+      <h1 class="heading-with-icon">
+        <SectionGlyph kind="garden" size={42} />
+        Digital Garden
+      </h1>
       <div class="divider"></div>
       <p class="subtitle">Thoughts, patch notes, and technical deep dives.</p>
     </div>
   </section>
 
-  <section class="posts-list">
-    {posts.map((post, index) => {
-      const formattedDate = new Date(post.data.date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-      return (
-        <a href={`/garden/${post.id}`} class="post-item glass-card fade-in-up" style={`animation-delay: ${0.1 * (index + 1)}s;`}>
-          <div class="post-meta">
-            <time datetime={post.data.date.toISOString()}>{formattedDate}</time>
-            <div class="tags">
-              {post.data.tags?.map(tag => <span class="tag">{tag}</span>)}
-            </div>
-          </div>
-          <h2>{post.data.title}</h2>
-          <p>{post.data.description}</p>
-        </a>
-      )
-    })}
+  <section class="blog-section" aria-labelledby="blog-heading">
+    <h2 id="blog-heading" class="garden-section-heading">Blog</h2>
+    {mainPosts.length > 0 ? (
+      <div class="posts-list">
+        <GardenPostList posts={mainPosts} animationOffset={0} />
+      </div>
+    ) : (
+      <p class="blog-empty">Nothing here yet.</p>
+    )}
+  </section>
+
+  <section class="patch-notes-section" aria-labelledby="patch-notes-heading">
+    <h2 id="patch-notes-heading" class="garden-section-heading">Patch notes</h2>
+    <p class="patch-notes-lede">
+      Small site and workflow changes. Tag garden posts with <code>patch-notes</code> to list them here.
+    </p>
+    {patchPosts.length > 0 ? (
+      <div class="posts-list patch-notes-list">
+        <GardenPostList posts={patchPosts} animationOffset={mainPosts.length} />
+      </div>
+    ) : (
+      <p class="patch-notes-empty">Nothing here yet.</p>
+    )}
   </section>
 </BaseLayout>
 
@@ -63,10 +75,59 @@ posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
     border-radius: 2px;
   }
 
+  .blog-section {
+    margin-bottom: 0;
+  }
+
+  .blog-empty {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
   .posts-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+  }
+
+  .garden-section-heading {
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    margin: 0 0 1.25rem;
+    letter-spacing: -0.02em;
+    color: var(--text-bright);
+  }
+
+  .patch-notes-section {
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--card-border);
+  }
+
+  .patch-notes-lede {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    margin: 0 0 1.5rem;
+    max-width: 42rem;
+    line-height: 1.6;
+  }
+
+  .patch-notes-lede code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    color: var(--accent);
+  }
+
+  .patch-notes-empty {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  .patch-notes-list {
+    margin-top: 0;
   }
 
   .post-item {

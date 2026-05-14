@@ -56,11 +56,7 @@ const formattedDate = new Date(project.data.date).toLocaleDateString('en-US', {
       <h1>{project.data.title}</h1>
       <div class="meta">
         <time datetime={project.data.date.toISOString()}>{formattedDate}</time>
-        <div class="tags">
-          {project.data.tags?.map(tag => (
-            <span class="tag">{tag}</span>
-          ))}
-        </div>
+
       </div>
       {(project.data.github || project.data.link) && (
         <div class="external-links">
@@ -70,7 +66,7 @@ const formattedDate = new Date(project.data.date).toLocaleDateString('en-US', {
       )}
     </header>
 
-    <div class="prose glass-card">
+    <div class="prose">
       <Content />
       {youtubeEmbedId && (
         <div class="video-embed">
@@ -122,15 +118,6 @@ const formattedDate = new Date(project.data.date).toLocaleDateString('en-US', {
     color: var(--text-main);
     font-family: var(--font-mono);
     font-size: 0.85rem;
-  }
-
-  .tags {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .tag {
-    color: var(--accent);
   }
 
   .external-links {

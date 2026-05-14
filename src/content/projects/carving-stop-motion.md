@@ -3,11 +3,6 @@ title: Carving animations (stop-motion wood sculpture)
 description: Maker portfolio piece for MIT—three stop-motion films from a single block each, literature and history as subtractive sculpture. Moby Dick, Holocaust, US History.
 date: 2020-06-01
 category: animation
-tags:
-  - stop-motion
-  - wood carving
-  - sculpture
-  - maker portfolio
 ---
 
 High school **maker portfolio** work for **MIT application**: stop-motion by carving **one block of wood** per animation. Subtractive process—carving removes material to reveal form—so making the film also destroys the sculpture. By the last frame only the frame sequence and video remain; emphasis stays on process over keeping a physical object.

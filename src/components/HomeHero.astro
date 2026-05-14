@@ -11,9 +11,8 @@ const first = site.name.split(' ')[0] ?? site.name;
     <div class="home-hero-copy">
       <h1 class="home-hero-title">Hey, I'm {first}!</h1>
       <p class="home-hero-lede">
-        I'm an MIT student who likes building things from wood, leather, and code. I care how systems fit
-        together, and I'm a top-down learner: map first, details after. Sometimes I write
-        <a href="/garden">in the garden</a>.
+        I'm an MIT student who likes building things from wood, leather, and code.
+        Currently interested in Neovim, leatherworking, game theory, formal verification, numerical methods, and how to learn better &amp; faster.
       </p>
       <p class="home-hero-tagline">{site.tagline}</p>
       <div class="home-hero-actions">
@@ -180,5 +179,6 @@ const first = site.name.split(' ')[0] ?? site.name;
     border-radius: 50%;
     object-fit: cover;
     display: block;
+    filter: brightness(0.85) contrast(1.05);
   }
 </style>

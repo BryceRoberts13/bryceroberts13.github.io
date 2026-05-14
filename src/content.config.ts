@@ -18,8 +18,8 @@ const projectsCollection = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.date(),
+    endDate: z.date().optional(),
     category: projectCategorySchema.default('coding'),
-    tags: z.array(z.string()).default([]),
     link: z.string().url().optional(),
     github: z.string().url().optional(),
   })

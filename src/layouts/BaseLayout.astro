@@ -38,7 +38,7 @@ const base = import.meta.env.BASE_URL;
     </style>
   </head>
   <body>
-    <div class="app-shell" data-drawer-open="false" data-sidebar-collapsed="false" data-rail-layout="false">
+    <div class="app-shell" data-drawer-open="false" data-sidebar-collapsed="false">
       <script is:inline>
         (function () {
           try {
@@ -46,10 +46,7 @@ const base = import.meta.env.BASE_URL;
             if (!mq.matches) return;
             if (localStorage.getItem('br-site-sidebar-collapsed') === 'true') {
               var shell = document.querySelector('.app-shell');
-              if (shell) {
-                shell.dataset.sidebarCollapsed = 'true';
-                shell.dataset.railLayout = 'true';
-              }
+              if (shell) shell.dataset.sidebarCollapsed = 'true';
             }
           } catch (_) {}
         })();

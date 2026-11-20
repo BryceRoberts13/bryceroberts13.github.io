@@ -10,51 +10,6 @@ function qs<T extends HTMLElement = HTMLElement>(sel: string): T | null {
 
 const DRAWER_MEDIA = window.matchMedia('(max-width: 767px)');
 
-/** Clears pending width→rail transition listener (collapse) and fallback timer */
-let railLayoutTransitionCleanup: (() => void) | null = null;
-
-function clearPendingRailLayoutTransition() {
-  railLayoutTransitionCleanup?.();
-  railLayoutTransitionCleanup = null;
-}
-
-function scheduleRailLayoutAfterSidebarWidthTransition(shell: HTMLElement): void {
-  const sidebar = qs<HTMLElement>('#site-sidebar');
-  if (!sidebar) {
-    shell.dataset.railLayout = 'true';
-    return;
-  }
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    shell.dataset.railLayout = 'true';
-    return;
-  }
-
-  clearPendingRailLayoutTransition();
-
-  const onEnd = (event: TransitionEvent) => {
-    if (event.target !== sidebar || event.propertyName !== 'width') return;
-    shell.dataset.railLayout = 'true';
-    cleanup();
-  };
-
-  const timeoutId = window.setTimeout(() => {
-    if (shell.dataset.sidebarCollapsed === 'true') {
-      shell.dataset.railLayout = 'true';
-    }
-    cleanup();
-  }, 650);
-
-  function cleanup() {
-    sidebar.removeEventListener('transitionend', onEnd);
-    window.clearTimeout(timeoutId);
-    railLayoutTransitionCleanup = null;
-  }
-
-  sidebar.addEventListener('transitionend', onEnd);
-  railLayoutTransitionCleanup = cleanup;
-}
-
 function getStoredThemePreference(): StoredThemePreference | null {
   const raw = localStorage.getItem(THEME_STORAGE_KEY);
   return raw === 'light' || raw === 'dark' ? raw : null;
@@ -69,8 +24,6 @@ function applyTheme(pref: StoredThemePreference) {
   document.documentElement.setAttribute('data-theme', pref);
   localStorage.setItem(THEME_STORAGE_KEY, pref);
 }
-
-
 
 function refreshSidebarToggleState(shell: HTMLElement) {
   const sidebarToggle = qs<HTMLButtonElement>('#desktop-sidebar-toggle');
@@ -88,17 +41,7 @@ function refreshSidebarToggleState(shell: HTMLElement) {
 function setCollapsed(shell: HTMLElement, collapsed: boolean) {
   if (DRAWER_MEDIA.matches) return;
 
-  clearPendingRailLayoutTransition();
-
-  if (!collapsed) {
-    shell.dataset.railLayout = 'false';
-    shell.dataset.sidebarCollapsed = 'false';
-  } else {
-    shell.dataset.sidebarCollapsed = 'true';
-    shell.dataset.railLayout = 'false';
-    scheduleRailLayoutAfterSidebarWidthTransition(shell);
-  }
-
+  shell.dataset.sidebarCollapsed = collapsed ? 'true' : 'false';
   localStorage.setItem(SIDEBAR_COLLAPSED_STORAGE_KEY, collapsed ? 'true' : 'false');
   refreshSidebarToggleState(shell);
 }
@@ -116,15 +59,12 @@ function setDrawer(shell: HTMLElement, open: boolean) {
 function syncResponsiveShell(shell: HTMLElement) {
   if (DRAWER_MEDIA.matches) {
     shell.removeAttribute('data-sidebar-collapsed');
-    shell.dataset.railLayout = 'false';
     shell.dataset.drawerOpen = 'false';
     const opener = qs<HTMLButtonElement>('#mobile-open-menu');
     if (opener) opener.setAttribute('aria-expanded', 'false');
-    clearPendingRailLayoutTransition();
   } else {
     const collapsed = localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY) === 'true';
     shell.dataset.sidebarCollapsed = collapsed ? 'true' : 'false';
-    shell.dataset.railLayout = collapsed ? 'true' : 'false';
     refreshSidebarToggleState(shell);
   }
 }
@@ -138,7 +78,7 @@ function setupThemePicker() {
   /** Place the menu in a fixed layer so the narrow rail overflow cannot clip it. */
   function positionDropdown() {
     const rect = toggle!.getBoundingClientRect();
-    const rail = shell?.dataset.railLayout === 'true';
+    const rail = shell?.dataset.sidebarCollapsed === 'true';
     const gap = 8;
     dropdown!.style.position = 'fixed';
     dropdown!.style.zIndex = '500';
@@ -243,9 +183,78 @@ function reconcileThemeFromStorage() {
   document.documentElement.setAttribute('data-theme', storedPref);
 }
 
+function ensureCopyToast(): HTMLElement {
+  let toast = qs<HTMLElement>('#copy-toast');
+  if (toast) return toast;
+
+  toast = document.createElement('div');
+  toast.id = 'copy-toast';
+  toast.className = 'copy-toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  toast.hidden = true;
+  document.body.appendChild(toast);
+  return toast;
+}
+
+let toastHideTimer: number | null = null;
+
+function showCopyToast(message: string) {
+  const toast = ensureCopyToast();
+  toast.textContent = message;
+  toast.hidden = false;
+  toast.dataset.visible = 'true';
+
+  if (toastHideTimer !== null) window.clearTimeout(toastHideTimer);
+  toastHideTimer = window.setTimeout(() => {
+    toast.dataset.visible = 'false';
+    toastHideTimer = window.setTimeout(() => {
+      toast.hidden = true;
+      toastHideTimer = null;
+    }, 220);
+  }, 1800);
+}
+
+async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+}
+
+function setupEmailCopy() {
+  document.addEventListener('click', async (e) => {
+    const trigger = (e.target as HTMLElement).closest<HTMLElement>('[data-copy-email]');
+    if (!trigger) return;
+
+    e.preventDefault();
+    const email = trigger.dataset.copyEmail?.trim();
+    if (!email) return;
+
+    const ok = await copyText(email);
+    showCopyToast(ok ? 'Email address copied' : 'Could not copy email');
+  });
+}
+
 function wireShell(shell: HTMLElement) {
   reconcileThemeFromStorage();
   setupThemePicker();
+  setupEmailCopy();
 
   qs<HTMLButtonElement>('#desktop-sidebar-toggle')?.addEventListener('click', () => {
     toggleCollapsed(shell);

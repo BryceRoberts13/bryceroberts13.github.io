@@ -1,17 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import profilePhoto from '../assets/profile.png';
+import { interests } from '../data/interests';
 import { site } from '../data/site';
 
 const first = site.name.split(' ')[0] ?? site.name;
-
-const interests = [
-  { label: 'Neovim', color: 'var(--accent-success)' },
-  { label: 'Leatherworking', color: 'var(--accent-secondary)' },
-  { label: 'Game Theory', color: 'var(--accent-link)' },
-  { label: 'Formal Verification', color: 'var(--accent)' },
-  { label: 'Numerical Methods', color: 'var(--accent-tertiary)' },
-];
 ---
 
 <section class="home-hero" aria-label="Introduction">
@@ -25,9 +18,9 @@ const interests = [
       </p>
       <div class="home-hero-interests" aria-label="Current interests">
         {interests.map((tag) => (
-          <span class="interest-tag" style={`--tag-color: ${tag.color}`}>
+          <a class="interest-tag" href={`/interests/${tag.slug}`} style={`--tag-color: ${tag.color}`}>
             {tag.label}
-          </span>
+          </a>
         ))}
       </div>
       <div class="home-hero-actions">
@@ -158,12 +151,22 @@ const interests = [
     color: var(--tag-color);
     background: color-mix(in srgb, var(--tag-color) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--tag-color) 25%, transparent);
-    transition: background 0.15s ease, border-color 0.15s ease;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   }
 
-  .interest-tag:hover {
+  .interest-tag:hover,
+  .interest-tag:focus-visible {
+    color: var(--tag-color);
     background: color-mix(in srgb, var(--tag-color) 20%, transparent);
     border-color: color-mix(in srgb, var(--tag-color) 40%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .interest-tag:focus-visible {
+    outline: 2px solid var(--tag-color);
+    outline-offset: 2px;
   }
 
   .home-hero-actions {
@@ -291,6 +294,11 @@ const interests = [
     .home-hero-visual {
       opacity: 1;
       animation: none;
+    }
+
+    .interest-tag:hover,
+    .interest-tag:focus-visible {
+      transform: none;
     }
   }
 </style>

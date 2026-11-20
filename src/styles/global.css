@@ -33,7 +33,8 @@
   --sidebar-width: clamp(240px, 22vw, 280px);
   --sidebar-rail-width: clamp(52px, 3.85rem, 68px);
   --shell-gap: clamp(1.25rem, 3vw, 2rem);
-  --sidebar-transition-duration: 0.42s;
+  --sidebar-transition-duration: 0.38s;
+  --sidebar-label-duration: 0.18s;
   --sidebar-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --main-column-max: clamp(32rem, 52vw + 11rem, 87rem);
 }
@@ -175,6 +176,8 @@ a:hover {
   .drawer-backdrop,
   #site-sidebar .sidebar-inner,
   #site-sidebar .nav-stack a,
+  #site-sidebar .nav-label,
+  #site-sidebar .logo-row,
   #site-sidebar .social-stack,
   #site-sidebar .logo-toolbar {
     transition-duration: 0ms !important;
@@ -299,13 +302,9 @@ a:hover {
 }
 
 @media (min-width: 768px) {
+  /* Width lives on the aside so only one length animates; grid tracks it. */
   .app-shell {
-    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-    transition: grid-template-columns var(--sidebar-transition-duration) var(--sidebar-transition-ease);
-  }
-
-  .app-shell[data-sidebar-collapsed='true'] {
-    grid-template-columns: var(--sidebar-rail-width) minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr);
   }
 
   .shell-drawer-anchor {
@@ -316,7 +315,7 @@ a:hover {
     position: sticky;
     top: 0;
     align-self: start;
-    width: 100%;
+    width: var(--sidebar-width);
     min-width: 0;
     max-width: 100%;
     height: 100vh;
@@ -326,10 +325,26 @@ a:hover {
     overflow-x: hidden;
     overflow-y: auto;
     box-sizing: border-box;
-    transition: border-color 0.25s ease;
+    container-type: inline-size;
+    container-name: shell-sidebar;
+    transition:
+      width var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      border-color 0.25s ease;
+  }
+
+  /* Keep social stacked while the rail is still narrow mid-expand. */
+  @container shell-sidebar (max-width: 140px) {
+    .social-stack {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
   }
 
   .app-shell[data-sidebar-collapsed='true'] #site-sidebar {
+    width: var(--sidebar-rail-width);
     border-right-color: var(--card-border);
   }
 
@@ -337,7 +352,7 @@ a:hover {
     display: none !important;
   }
 
-  /* Icon rail — applied immediately with collapse (no deferred layout phase) */
+  /* Continuous rail morph — no display:none / clip snaps mid-width. */
   .app-shell[data-sidebar-collapsed='true'] #site-sidebar .sidebar-inner {
     align-items: center;
     padding: 0.75rem 0.35rem calc(var(--shell-gap) + 0.35rem);
@@ -361,7 +376,11 @@ a:hover {
   }
 
   .app-shell[data-sidebar-collapsed='true'] #site-sidebar .logo-row {
-    display: none;
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
   }
 
   .app-shell[data-sidebar-collapsed='true'] #site-sidebar .logo-toolbar {
@@ -384,13 +403,10 @@ a:hover {
   }
 
   .app-shell[data-sidebar-collapsed='true'] #site-sidebar .nav-stack a {
-    position: relative;
     justify-content: center;
-    width: 2.65rem;
-    min-width: 2.65rem;
-    height: 2.65rem;
+    width: 100%;
     min-height: 2.65rem;
-    padding: 0;
+    padding: 0.45rem 0.2rem;
     gap: 0;
     border: 1px solid transparent;
     border-radius: 10px;
@@ -400,16 +416,10 @@ a:hover {
   }
 
   .app-shell[data-sidebar-collapsed='true'] #site-sidebar .nav-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
+    max-width: 0;
+    opacity: 0;
+    margin: 0;
+    pointer-events: none;
   }
 
   .app-shell[data-sidebar-collapsed='true'] #site-sidebar .nav-stack a:hover,

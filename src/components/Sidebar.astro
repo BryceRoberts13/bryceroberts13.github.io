@@ -166,7 +166,8 @@ const currentPath = Astro.url.pathname;
     position: relative;
     transition:
       padding var(--sidebar-transition-duration) var(--sidebar-transition-ease),
-      gap var(--sidebar-transition-duration) var(--sidebar-transition-ease);
+      gap var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      align-items var(--sidebar-transition-duration) var(--sidebar-transition-ease);
   }
 
   @media (max-width: 767px) {
@@ -186,6 +187,14 @@ const currentPath = Astro.url.pathname;
     align-items: center;
     justify-content: flex-start;
     gap: 0.85rem;
+    max-height: 3rem;
+    opacity: 1;
+    overflow: hidden;
+    transition:
+      max-height var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      opacity var(--sidebar-label-duration) ease,
+      margin var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      padding var(--sidebar-transition-duration) var(--sidebar-transition-ease);
   }
 
   .logo-link {
@@ -299,32 +308,26 @@ const currentPath = Astro.url.pathname;
     margin: 0;
     border-radius: 8px;
     border-left: 2px solid transparent;
+    /* Dimensions flip with collapse — do not interpolate (avoids label squash). */
     transition:
       border-color 0.2s ease,
       color 0.2s ease,
       background 0.15s ease,
       transform 0.15s ease,
-      box-shadow 0.15s ease,
-      padding var(--sidebar-transition-duration) var(--sidebar-transition-ease),
-      width var(--sidebar-transition-duration) var(--sidebar-transition-ease),
-      min-width var(--sidebar-transition-duration) var(--sidebar-transition-ease),
-      height var(--sidebar-transition-duration) var(--sidebar-transition-ease),
-      min-height var(--sidebar-transition-duration) var(--sidebar-transition-ease),
-      gap var(--sidebar-transition-duration) var(--sidebar-transition-ease),
-      border-radius var(--sidebar-transition-duration) var(--sidebar-transition-ease),
-      border-left-width var(--sidebar-transition-duration) var(--sidebar-transition-ease);
+      box-shadow 0.15s ease;
   }
 
   .nav-label {
-    position: static;
-    width: auto;
-    height: auto;
-    clip: unset;
-    clip-path: unset;
+    display: inline-block;
+    max-width: 9rem;
     margin: 0;
-    overflow: visible;
-    white-space: normal;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 1;
     border: 0;
+    transition:
+      opacity var(--sidebar-label-duration) ease,
+      max-width var(--sidebar-transition-duration) var(--sidebar-transition-ease);
   }
 
   .nav-stack a:hover,
@@ -338,7 +341,9 @@ const currentPath = Astro.url.pathname;
     gap: 0.75rem;
     flex-wrap: wrap;
     margin-top: 0.35rem;
-    transition: gap var(--sidebar-transition-duration) var(--sidebar-transition-ease);
+    transition:
+      gap var(--sidebar-transition-duration) var(--sidebar-transition-ease),
+      margin-top var(--sidebar-transition-duration) var(--sidebar-transition-ease);
   }
 
   .social-chip {

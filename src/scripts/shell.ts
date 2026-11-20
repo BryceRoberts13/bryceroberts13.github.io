@@ -70,15 +70,7 @@ function applyTheme(pref: StoredThemePreference) {
   localStorage.setItem(THEME_STORAGE_KEY, pref);
 }
 
-function refreshThemeToggleLabel() {
-  const themeToggle = qs<HTMLButtonElement>('[data-theme-toggle]');
-  if (!themeToggle) return;
 
-  const current = readResolvedThemeAttr();
-  const label = current === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
-  themeToggle.setAttribute('aria-label', label);
-  themeToggle.setAttribute('title', label);
-}
 
 function refreshSidebarToggleState(shell: HTMLElement) {
   const sidebarToggle = qs<HTMLButtonElement>('#desktop-sidebar-toggle');
@@ -137,11 +129,111 @@ function syncResponsiveShell(shell: HTMLElement) {
   }
 }
 
-function cycleTheme() {
+function setupThemePicker() {
+  const toggle = qs<HTMLButtonElement>('[data-theme-toggle]');
+  const dropdown = qs<HTMLElement>('.theme-picker-dropdown');
+  const shell = qs<HTMLElement>('.app-shell');
+  if (!toggle || !dropdown) return;
+
+  /** Place the menu in a fixed layer so the narrow rail overflow cannot clip it. */
+  function positionDropdown() {
+    const rect = toggle!.getBoundingClientRect();
+    const rail = shell?.dataset.railLayout === 'true';
+    const gap = 8;
+    dropdown!.style.position = 'fixed';
+    dropdown!.style.zIndex = '500';
+
+    if (rail) {
+      dropdown!.style.left = `${Math.round(rect.right + gap)}px`;
+      dropdown!.style.bottom = `${Math.round(window.innerHeight - rect.bottom)}px`;
+      dropdown!.style.top = 'auto';
+      dropdown!.style.right = 'auto';
+    } else {
+      dropdown!.style.left = `${Math.round(rect.left)}px`;
+      dropdown!.style.bottom = `${Math.round(window.innerHeight - rect.top + gap)}px`;
+      dropdown!.style.top = 'auto';
+      dropdown!.style.right = 'auto';
+    }
+  }
+
+  function clearDropdownPosition() {
+    dropdown!.style.position = '';
+    dropdown!.style.left = '';
+    dropdown!.style.right = '';
+    dropdown!.style.top = '';
+    dropdown!.style.bottom = '';
+    dropdown!.style.zIndex = '';
+  }
+
+  function openPicker() {
+    positionDropdown();
+    toggle!.setAttribute('aria-expanded', 'true');
+  }
+
+  function closePicker() {
+    toggle!.setAttribute('aria-expanded', 'false');
+    clearDropdownPosition();
+  }
+
+  function isOpen() {
+    return toggle!.getAttribute('aria-expanded') === 'true';
+  }
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (isOpen()) {
+      closePicker();
+    } else {
+      openPicker();
+    }
+  });
+
+  dropdown.addEventListener('click', (e) => {
+    const option = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-theme-value]');
+    if (!option) return;
+    const value = option.dataset.themeValue as StoredThemePreference;
+    if (!value) return;
+    applyTheme(value);
+    dropdown.querySelectorAll('[data-theme-value]').forEach((opt) => {
+      opt.setAttribute('aria-selected', opt === option ? 'true' : 'false');
+    });
+    closePicker();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !(e.target as HTMLElement).closest('[data-theme-picker]')) {
+      closePicker();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) {
+      closePicker();
+      toggle.focus();
+    }
+  });
+
+  window.addEventListener(
+    'resize',
+    () => {
+      if (isOpen()) positionDropdown();
+    },
+    { passive: true },
+  );
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (isOpen()) positionDropdown();
+    },
+    { passive: true, capture: true },
+  );
+
   const current = readResolvedThemeAttr();
-  const next: StoredThemePreference = current === 'dark' ? 'light' : 'dark';
-  applyTheme(next);
-  refreshThemeToggleLabel();
+  dropdown.querySelectorAll('[data-theme-value]').forEach((opt) => {
+    const btn = opt as HTMLButtonElement;
+    btn.setAttribute('aria-selected', btn.dataset.themeValue === current ? 'true' : 'false');
+  });
 }
 
 /** Re-sync if head script ran before storage became available (rare edge). */
@@ -153,11 +245,7 @@ function reconcileThemeFromStorage() {
 
 function wireShell(shell: HTMLElement) {
   reconcileThemeFromStorage();
-  refreshThemeToggleLabel();
-
-  qs<HTMLButtonElement>('[data-theme-toggle]')?.addEventListener('click', () => {
-    cycleTheme();
-  });
+  setupThemePicker();
 
   qs<HTMLButtonElement>('#desktop-sidebar-toggle')?.addEventListener('click', () => {
     toggleCollapsed(shell);

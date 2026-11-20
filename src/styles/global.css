@@ -1,12 +1,23 @@
 :root {
-  /* Colors inspired by Relace AI (Light Edition) */
-  --bg-color: #F3F2E7;
-  --text-main: #70706F;
-  --text-bright: #191918;
-  --accent: #FCAA2D;
-  --card-bg: rgba(255, 255, 255, 0.4);
-  --card-border: rgba(25, 25, 24, 0.08); /* slightly darker border than background */
-  --glass-bg: rgba(243, 242, 231, 0.85);
+  /* Catppuccin Latte */
+  --bg-color: #eff1f5;        /* Base */
+  --bg-surface: #e6e9ef;      /* Mantle */
+  --bg-overlay: #ccd0da;      /* Surface0 */
+  --bg-dark: #eff1f5;         /* Alias for contrast text on accent buttons */
+  --text-main: #6c6f85;       /* Subtext0 */
+  --text-bright: #4c4f69;     /* Text */
+  --text-subtle: #8c8fa1;     /* Overlay1 */
+  --muted: #8c8fa1;           /* Alias → Overlay1 */
+  --accent: #8839ef;          /* Mauve */
+  --accent-secondary: #fe640b; /* Peach */
+  --accent-tertiary: #179299;  /* Teal */
+  --accent-link: #1e66f5;     /* Blue */
+  --accent-success: #40a02b;  /* Green */
+  --accent-warning: #df8e1d;  /* Yellow */
+  --accent-danger: #d20f39;   /* Red */
+  --card-bg: rgba(230, 233, 239, 0.6);  /* Mantle-based */
+  --card-border: rgba(76, 79, 105, 0.12);
+  --glass-bg: rgba(239, 241, 245, 0.85);
 
   /* Typography */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -44,6 +55,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  transition:
+    background-color 0.28s ease,
+    color 0.28s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
 }
 
 main {
@@ -105,34 +125,41 @@ a:hover {
 
 .glass-card:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(252, 170, 45, 0.4); /* Orange accent tint */
+  background: var(--bg-overlay);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 /* Custom Selection */
 ::selection {
-  background-color: rgba(252, 170, 45, 0.3);
-  color: #191918;
-}
-
-[data-theme='dark'] {
-  --bg-color: #121211;
-  --text-main: #b7b7b5;
-  --text-bright: #f5f5f4;
-  --accent: #fcaa2d;
-  --card-bg: rgba(30, 30, 29, 0.55);
-  --card-border: rgba(245, 245, 244, 0.1);
-  --glass-bg: rgba(18, 18, 17, 0.85);
-}
-
-[data-theme='dark'] ::selection {
-  background-color: rgba(252, 170, 45, 0.35);
+  background-color: color-mix(in srgb, var(--accent) 30%, transparent);
   color: var(--text-bright);
 }
 
+[data-theme='dark'] {
+  /* Catppuccin Mocha */
+  --bg-color: #1e1e2e;        /* Base */
+  --bg-surface: #181825;      /* Mantle */
+  --bg-overlay: #313244;      /* Surface0 */
+  --bg-dark: #1e1e2e;
+  --text-main: #a6adc8;       /* Subtext0 */
+  --text-bright: #cdd6f4;     /* Text */
+  --text-subtle: #7f849c;     /* Overlay1 */
+  --muted: #7f849c;
+  --accent: #cba6f7;          /* Mauve */
+  --accent-secondary: #fab387; /* Peach */
+  --accent-tertiary: #94e2d5;  /* Teal */
+  --accent-link: #89b4fa;     /* Blue */
+  --accent-success: #a6e3a1;  /* Green */
+  --accent-warning: #f9e2af;  /* Yellow */
+  --accent-danger: #f38ba8;   /* Red */
+  --card-bg: rgba(24, 24, 37, 0.6);
+  --card-border: rgba(205, 214, 244, 0.1);
+  --glass-bg: rgba(30, 30, 46, 0.85);
+}
+
 [data-theme='dark'] .glass-card:hover {
-  background: rgba(42, 42, 41, 0.75);
-  border-color: rgba(252, 170, 45, 0.45);
+  background: var(--bg-overlay);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
 .app-shell {
@@ -189,7 +216,7 @@ a:hover {
 
 .shell-drawer-fab:hover {
   color: var(--accent);
-  border-color: rgba(252, 170, 45, 0.45);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
   background: var(--card-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -382,9 +409,9 @@ a:hover {
   .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a.active {
     border-left-color: transparent;
     color: var(--text-bright);
-    background: #ffffff;
-    border: 1px solid rgba(25, 25, 24, 0.1);
-    box-shadow: 0 1px 4px rgba(25, 25, 24, 0.12);
+    background: var(--bg-overlay);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--text-bright) 12%, transparent);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     transform: none;
@@ -397,8 +424,8 @@ a:hover {
 
   [data-theme='dark'] .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a:hover,
   [data-theme='dark'] .app-shell[data-rail-layout='true'] #site-sidebar .nav-stack a.active {
-    background: rgba(245, 245, 244, 0.14);
-    border-color: rgba(245, 245, 244, 0.18);
+    background: color-mix(in srgb, var(--text-bright) 14%, transparent);
+    border-color: color-mix(in srgb, var(--text-bright) 18%, transparent);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
     color: var(--text-bright);
   }
@@ -422,7 +449,7 @@ a:hover {
   }
 
   .app-shell[data-rail-layout='true'] #site-sidebar .toolbar-icon-btn:hover {
-    box-shadow: 0 2px 8px rgba(25, 25, 24, 0.1);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--text-bright) 10%, transparent);
   }
 
   [data-theme='dark'] .app-shell[data-rail-layout='true'] #site-sidebar .toolbar-icon-btn:hover {
@@ -430,16 +457,4 @@ a:hover {
   }
 }
 
-/* Sidebar theme toggle lives next to logo; icons swap from html[data-theme] */
-[data-theme-toggle] .theme-toggle-icon {
-  display: none;
-}
 
-html:not([data-theme]) [data-theme-toggle] .theme-toggle-icon-moon,
-html[data-theme='light'] [data-theme-toggle] .theme-toggle-icon-moon {
-  display: block;
-}
-
-html[data-theme='dark'] [data-theme-toggle] .theme-toggle-icon-sun {
-  display: block;
-}

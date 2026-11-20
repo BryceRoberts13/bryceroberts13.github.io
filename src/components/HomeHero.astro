@@ -4,19 +4,34 @@ import profilePhoto from '../assets/profile.png';
 import { site } from '../data/site';
 
 const first = site.name.split(' ')[0] ?? site.name;
+
+const interests = [
+  { label: 'Neovim', color: 'var(--accent-success)' },
+  { label: 'Leatherworking', color: 'var(--accent-secondary)' },
+  { label: 'Game Theory', color: 'var(--accent-link)' },
+  { label: 'Formal Verification', color: 'var(--accent)' },
+  { label: 'Numerical Methods', color: 'var(--accent-tertiary)' },
+];
 ---
 
 <section class="home-hero" aria-label="Introduction">
   <div class="home-hero-inner">
     <div class="home-hero-copy">
-      <h1 class="home-hero-title">Hey, I'm {first}!</h1>
+      <p class="home-hero-greeting">Hey, I'm</p>
+      <h1 class="home-hero-title">{first}<span class="accent-dot">.</span></h1>
       <p class="home-hero-lede">
-        I'm an MIT student who likes building things from wood, leather, and code.
-        Currently interested in Neovim, leatherworking, game theory, formal verification, numerical methods, and how to learn better &amp; faster.
+        MIT student building things from wood, leather, and code.
+        I like figuring out how systems work and making tools that feel good to use.
       </p>
-      <p class="home-hero-tagline">{site.tagline}</p>
+      <div class="home-hero-interests" aria-label="Current interests">
+        {interests.map((tag) => (
+          <span class="interest-tag" style={`--tag-color: ${tag.color}`}>
+            {tag.label}
+          </span>
+        ))}
+      </div>
       <div class="home-hero-actions">
-        <a href="/resume" class="home-hero-btn">
+        <a href="/resume" class="home-hero-btn home-hero-btn-primary">
           <svg class="home-hero-btn-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
             <polyline points="14 2 14 8 20 8" />
@@ -55,7 +70,7 @@ const first = site.name.split(' ')[0] ?? site.name;
 <style>
   .home-hero {
     margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
-    padding-block: clamp(0.5rem, 2vw, 1.25rem);
+    padding-block: clamp(1rem, 3vw, 2rem);
     color: var(--text-main);
   }
 
@@ -74,32 +89,42 @@ const first = site.name.split(' ')[0] ?? site.name;
     }
   }
 
+  .home-hero-greeting {
+    margin: 0 0 0.15rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text-main);
+    letter-spacing: 0.01em;
+    opacity: 0;
+    animation: fadeSlideIn 0.5s ease 0.1s forwards;
+  }
+
   .home-hero-title {
-    margin: 0 0 1rem;
-    font-size: clamp(1.85rem, 4.2vw, 2.45rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
+    margin: 0 0 1.25rem;
+    font-size: clamp(2.5rem, 5.5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
     color: var(--text-bright);
+    opacity: 0;
+    animation: fadeSlideIn 0.5s ease 0.2s forwards;
+  }
+
+  .accent-dot {
+    color: var(--accent);
   }
 
   .home-hero-lede {
-    margin: 0 0 0.85rem;
-    font-size: 1.05rem;
-    line-height: 1.65;
-    max-width: 36rem;
-  }
-
-  .home-hero-tagline {
-    margin: 0 0 1.35rem;
-    font-size: 0.95rem;
-    line-height: 1.55;
-    opacity: 0.92;
-    max-width: 36rem;
+    margin: 0 0 1.25rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    max-width: 34rem;
+    opacity: 0;
+    animation: fadeSlideIn 0.5s ease 0.3s forwards;
   }
 
   .home-hero-lede a {
-    color: var(--accent);
+    color: var(--accent-link, var(--accent));
     text-decoration: none;
     font-weight: 600;
   }
@@ -109,18 +134,47 @@ const first = site.name.split(' ')[0] ?? site.name;
     text-underline-offset: 0.2em;
   }
 
+  .home-hero-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeSlideIn 0.5s ease 0.4s forwards;
+  }
+
+  .interest-tag {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--tag-color);
+    background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tag-color) 25%, transparent);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .interest-tag:hover {
+    background: color-mix(in srgb, var(--tag-color) 20%, transparent);
+    border-color: color-mix(in srgb, var(--tag-color) 40%, transparent);
+  }
+
   .home-hero-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.65rem;
+    opacity: 0;
+    animation: fadeSlideIn 0.5s ease 0.5s forwards;
   }
 
   .home-hero-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.55rem 0.95rem;
-    border-radius: 8px;
+    padding: 0.6rem 1.1rem;
+    border-radius: 10px;
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-bright);
@@ -132,17 +186,27 @@ const first = site.name.split(' ')[0] ?? site.name;
     transition:
       border-color 0.15s ease,
       background 0.15s ease,
-      color 0.15s ease;
+      color 0.15s ease,
+      transform 0.15s ease;
   }
 
   .home-hero-btn:hover {
-    border-color: rgba(252, 170, 45, 0.45);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
     color: var(--accent);
-    background: rgba(255, 255, 255, 0.6);
+    background: var(--bg-overlay, var(--card-bg));
+    transform: translateY(-1px);
   }
 
-  [data-theme='dark'] .home-hero-btn:hover {
-    background: rgba(42, 42, 41, 0.75);
+  .home-hero-btn-primary {
+    background: var(--accent);
+    color: var(--bg-color);
+    border-color: var(--accent);
+  }
+
+  .home-hero-btn-primary:hover {
+    background: color-mix(in srgb, var(--accent) 85%, black);
+    color: var(--bg-color);
+    border-color: color-mix(in srgb, var(--accent) 85%, black);
   }
 
   .home-hero-btn-icon {
@@ -153,6 +217,8 @@ const first = site.name.split(' ')[0] ?? site.name;
   .home-hero-visual {
     display: flex;
     justify-content: center;
+    opacity: 0;
+    animation: fadeScaleIn 0.6s ease 0.3s forwards;
   }
 
   @media (min-width: 768px) {
@@ -165,12 +231,17 @@ const first = site.name.split(' ')[0] ?? site.name;
     width: min(220px, 70vw);
     height: min(220px, 70vw);
     border-radius: 50%;
-    background: color-mix(in srgb, var(--accent) 32%, var(--bg-color));
+    background: color-mix(in srgb, var(--accent) 18%, var(--bg-color));
     display: grid;
     place-items: center;
-    padding: 10px;
+    padding: 6px;
     box-sizing: border-box;
-    border: 1px solid var(--card-border);
+    border: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .home-hero-photo-ring:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   }
 
   .home-hero-photo {
@@ -179,6 +250,40 @@ const first = site.name.split(' ')[0] ?? site.name;
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    filter: brightness(0.85) contrast(1.05);
+    filter: brightness(0.88) contrast(1.05);
+  }
+
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeScaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero-greeting,
+    .home-hero-title,
+    .home-hero-lede,
+    .home-hero-interests,
+    .home-hero-actions,
+    .home-hero-visual {
+      opacity: 1;
+      animation: none;
+    }
   }
 </style>

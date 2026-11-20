@@ -1,0 +1,304 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { interests, isProjectPiece, type Interest } from '../../data/interests';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  return interests.map((interest) => ({
+    params: { slug: interest.slug },
+    props: { interest },
+  }));
+}
+
+interface Props {
+  interest: Interest;
+}
+
+const { interest } = Astro.props;
+const projects = await getCollection('projects');
+const byId = new Map(projects.map((project) => [project.id, project]));
+
+type ResolvedPiece = {
+  title: string;
+  summary: string;
+  href?: string;
+  meta?: string;
+};
+
+const pieces: ResolvedPiece[] = interest.pieces.map((piece) => {
+  if (!isProjectPiece(piece)) {
+    return piece;
+  }
+
+  const project: CollectionEntry<'projects'> | undefined = byId.get(piece.projectId);
+  if (!project) {
+    throw new Error(
+      `Interest "${interest.slug}" references missing project "${piece.projectId}".`,
+    );
+  }
+
+  return {
+    title: project.data.title,
+    summary: piece.summary ?? project.data.description,
+    href: `/projects/${project.id}`,
+    meta: project.data.date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      timeZone: 'UTC',
+    }),
+  };
+});
+---
+
+<BaseLayout title={`${interest.label} | Bryce Roberts`}>
+  <article class="interest-page">
+    <a href="/" class="back-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      Home
+    </a>
+
+    <header class="page-header fade-in-up" style={`--tag-color: ${interest.color}`}>
+      <p class="interest-kicker">{interest.label}</p>
+      <h1>{interest.label}</h1>
+      <div class="divider"></div>
+      <p class="lede">{interest.lede}</p>
+      {
+        interest.links && interest.links.length > 0 && (
+          <div class="external-links">
+            {interest.links.map((link) => (
+              <a href={link.href} class="glass-btn" target="_blank" rel="noopener noreferrer">
+                {link.label}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    {
+      interest.points && interest.points.length > 0 && (
+        <section class="points fade-in-up" style="animation-delay: 0.08s" aria-labelledby="interest-points">
+          <h2 id="interest-points">{interest.pointsTitle ?? 'Notes'}</h2>
+          <ul>
+            {interest.points.map((point) => (
+              <li>{point}</li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="pieces" aria-labelledby="interest-pieces">
+      <h2 id="interest-pieces" class="fade-in-up" style="animation-delay: 0.12s">
+        Work
+      </h2>
+      <div class="pieces-grid">
+        {
+          pieces.map((piece, index) => {
+            const delay = 0.16 + index * 0.06;
+            const inner = (
+              <>
+                <div class="piece-meta">
+                  {piece.meta && <span>{piece.meta}</span>}
+                </div>
+                <h3>{piece.title}</h3>
+                <p>{piece.summary}</p>
+              </>
+            );
+            return piece.href ? (
+              <a
+                href={piece.href}
+                class="piece-card glass-card fade-in-up"
+                style={`animation-delay: ${delay}s; --tag-color: ${interest.color}`}
+              >
+                {inner}
+              </a>
+            ) : (
+              <div
+                class="piece-note glass-card fade-in-up"
+                style={`animation-delay: ${delay}s; --tag-color: ${interest.color}`}
+              >
+                {inner}
+              </div>
+            );
+          })
+        }
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    font-family: var(--font-mono);
+  }
+
+  .back-link:hover {
+    color: var(--accent);
+  }
+
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .interest-kicker {
+    display: inline-block;
+    margin: 0 0 0.85rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--tag-color);
+    background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tag-color) 25%, transparent);
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    color: var(--text-bright);
+  }
+
+  .divider {
+    height: 3px;
+    width: 60px;
+    background: var(--tag-color, var(--accent));
+    border-radius: 2px;
+  }
+
+  .lede {
+    font-size: 1.125rem;
+    color: var(--text-main);
+    margin-top: 1.5rem;
+    max-width: 40rem;
+    line-height: 1.7;
+  }
+
+  .external-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .glass-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: var(--text-bright);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .glass-btn:hover {
+    background: color-mix(in srgb, var(--tag-color, var(--accent)) 10%, transparent);
+    border-color: color-mix(in srgb, var(--tag-color, var(--accent)) 40%, transparent);
+    color: var(--tag-color, var(--accent));
+  }
+
+  .points h2,
+  .pieces h2 {
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    margin-bottom: 1rem;
+  }
+
+  .points ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    max-width: 40rem;
+    color: var(--text-main);
+    line-height: 1.7;
+  }
+
+  .points li + li {
+    margin-top: 0.45rem;
+  }
+
+  .pieces-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .piece-card,
+  .piece-note {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .piece-card {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .piece-meta {
+    min-height: 1.1rem;
+    margin-bottom: 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--tag-color, var(--accent));
+  }
+
+  .piece-card h3,
+  .piece-note h3 {
+    font-size: 1.2rem;
+    margin: 0 0 0.45rem;
+    color: var(--text-bright);
+    transition: color 0.2s ease;
+  }
+
+  .piece-card:hover h3 {
+    color: var(--tag-color, var(--accent));
+  }
+
+  .piece-card p,
+  .piece-note p {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .piece-note:hover {
+    transform: none;
+    background: var(--card-bg);
+    border-color: var(--card-border);
+  }
+
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-up {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+</style>

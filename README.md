@@ -2,6 +2,9 @@
 
 Personal website. Built with [Astro](https://astro.build/), deployed to GitHub Pages.
 
+github: https://github.com/BryceRoberts13/bryceroberts13.github.io
+deployment: https://bryceroberts13.github.io/
+
 ## Development
 
 ```bash
@@ -35,3 +38,7 @@ This section serves as a centralized hub for tracking website development, futur
 ## Inspiraion:
 1. https://www.taniarascia.com/blog/
 2. https://paulstamatiou.com/
+3. https://brittanychiang.com/#projects
+4. https://agniv.me/
+5. https://people.csail.mit.edu/karger/
+6. https://www.instagram.com/reels/Db15Zn0hSmH/

@@ -73,20 +73,29 @@ let cardIndex = 0;
               {sectionProjects.map((project) => {
                 cardIndex += 1;
                 const delay = 0.1 * cardIndex;
+                const badgeColor =
+                  sec.category === 'coding'
+                    ? 'var(--accent-link)'
+                    : sec.category === 'leatherworking'
+                      ? 'var(--accent-secondary)'
+                      : sec.category === 'woodworking'
+                        ? 'var(--accent-success)'
+                        : 'var(--accent)';
                 return (
                   <a
                     href={`/projects/${project.id}`}
                     class="project-card glass-card fade-in-up"
-                    style={`animation-delay: ${delay}s;`}
+                    style={`animation-delay: ${delay}s; --badge-color: ${badgeColor};`}
                   >
                     <div class="card-content">
                       <div class="card-header">
-                        <h3>{project.data.title}</h3>
+                        <span class="card-badge">{sec.title}</span>
                         <time class="card-date" datetime={project.data.date.toISOString()}>
                           {project.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}
                           {project.data.endDate && ` – ${project.data.endDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}`}
                         </time>
                       </div>
+                      <h3>{project.data.title}</h3>
                       <p>{project.data.description}</p>
                     </div>
                   </a>
@@ -178,14 +187,27 @@ let cardIndex = 0;
   .card-header {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     gap: 1rem;
     margin-bottom: 0.75rem;
   }
 
+  .card-badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--badge-color, var(--accent));
+    background: color-mix(in srgb, var(--badge-color, var(--accent)) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--badge-color, var(--accent)) 20%, transparent);
+  }
+
   .project-card h3 {
     font-size: 1.25rem;
-    margin: 0;
+    margin: 0 0 0.45rem;
     color: var(--text-bright);
     transition: color 0.2s ease;
   }
@@ -221,6 +243,14 @@ let cardIndex = 0;
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-up {
+      opacity: 1;
+      transform: none;
+      animation: none;
     }
   }
 </style>

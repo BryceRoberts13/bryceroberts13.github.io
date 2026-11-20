@@ -94,44 +94,54 @@ const currentPath = Astro.url.pathname;
           <line x1="10" x2="14" y1="16" y2="16" />
         </svg>
       </button>
-      <button
-        type="button"
-        class="toolbar-icon-btn"
-        data-theme-toggle
-        aria-label="Toggle color theme"
-      >
-        <svg
-          class="theme-toggle-icon theme-toggle-icon-moon"
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
+      <div class="theme-picker-wrapper" data-theme-picker>
+        <button
+          type="button"
+          class="toolbar-icon-btn"
+          data-theme-toggle
+          aria-label="Choose color theme"
+          aria-expanded="false"
+          aria-haspopup="true"
         >
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
-        <svg
-          class="theme-toggle-icon theme-toggle-icon-sun"
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-        </svg>
-      </button>
+          <!-- Palette icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+            <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+            <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+            <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+          </svg>
+        </button>
+        <div class="theme-picker-dropdown" role="listbox" aria-label="Color themes">
+          <button class="theme-option" role="option" data-theme-value="light" aria-selected="true">
+            <span class="theme-option-check">✓</span>
+            <svg class="theme-option-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+            <span class="theme-option-label">Latte</span>
+            <span class="theme-swatches">
+              <span class="swatch" style="background: #8839ef"></span>
+              <span class="swatch" style="background: #fe640b"></span>
+              <span class="swatch" style="background: #179299"></span>
+              <span class="swatch" style="background: #1e66f5"></span>
+            </span>
+          </button>
+          <button class="theme-option" role="option" data-theme-value="dark" aria-selected="false">
+            <span class="theme-option-check">✓</span>
+            <svg class="theme-option-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <span class="theme-option-label">Mocha</span>
+            <span class="theme-swatches">
+              <span class="swatch" style="background: #cba6f7"></span>
+              <span class="swatch" style="background: #fab387"></span>
+              <span class="swatch" style="background: #94e2d5"></span>
+              <span class="swatch" style="background: #89b4fa"></span>
+            </span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </aside>
@@ -240,7 +250,7 @@ const currentPath = Astro.url.pathname;
 
   .toolbar-icon-btn:hover {
     color: var(--accent);
-    border-color: rgba(252, 170, 45, 0.45);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
     background: var(--card-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -349,7 +359,7 @@ const currentPath = Astro.url.pathname;
 
   .social-chip:hover {
     color: var(--accent);
-    border-color: rgba(252, 170, 45, 0.45);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
     background: var(--card-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -359,6 +369,111 @@ const currentPath = Astro.url.pathname;
   .social-chip:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+
+  .theme-picker-wrapper {
+    position: relative;
+  }
+
+  .theme-picker-dropdown {
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 200px;
+    background: var(--bg-surface);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 0.35rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 400;
+  }
+
+  .theme-picker-dropdown::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 1rem;
+    width: 12px;
+    height: 12px;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
+    transform: rotate(45deg);
+  }
+
+  /* Arrow hidden when JS repositions the menu to fixed coords */
+  .theme-picker-dropdown[style*='position: fixed']::after,
+  .theme-picker-dropdown[style*='position:fixed']::after {
+    display: none;
+  }
+
+  [data-theme-toggle][aria-expanded='true'] + .theme-picker-dropdown {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .theme-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 0.65rem;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+
+  .theme-option:hover {
+    background: var(--bg-overlay);
+    color: var(--text-bright);
+  }
+
+  .theme-option[aria-selected='true'] {
+    color: var(--accent);
+  }
+
+  .theme-option-check {
+    width: 1rem;
+    font-size: 0.8rem;
+    opacity: 0;
+    color: var(--accent);
+  }
+
+  .theme-option[aria-selected='true'] .theme-option-check {
+    opacity: 1;
+  }
+
+  .theme-option-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .theme-option-label {
+    flex: 1;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .theme-swatches {
+    display: flex;
+    gap: 3px;
+  }
+
+  .swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: block;
   }
 </style>
 
